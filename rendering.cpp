@@ -113,12 +113,18 @@ bool LoadTexture( const char *filename, Texture *texture )
 	SDL_Surface *img = IMG_Load( filename );
 	if( img )
 	{
+#ifdef _WIN32
 		GLenum format = GL_RGBA;
 		if( img->format->BytesPerPixel == 3 )
 			format = GL_RGB;
+#else
+		GLenum format = GL_BGRA;
+		if( img->format->BytesPerPixel == 3 )
+			format = GL_BGR;
+#endif
 		
 		glGenTextures( 1, &texture->id );
-		glBindTexture( GL_TEXTURE_2D, result );
+		glBindTexture( GL_TEXTURE_2D, texture->id );
 		
 		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
 		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );

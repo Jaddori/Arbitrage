@@ -6,8 +6,6 @@
 //  Copyright © 2016 SpaceCat. All rights reserved.
 //
 
-#include <SDL2/SDL.h>
-#include <OpenGL/gl3.h>
 #include "arbitrage.h"
 
 int main( int argc, char *argv[] )
@@ -30,7 +28,10 @@ int main( int argc, char *argv[] )
 			const char *vsource = "#version 330\n"
 			"layout(location=0) in vec2 PositionIn;"
 			"out vec2 UV0;"
-			"void main() { gl_Position = vec4( PositionIn, 1.0, 1.0 ); UV0 = PositionIn; }";
+			"uniform mat4 Model;"
+			"uniform mat4 View;"
+			"uniform mat4 Projection;"
+			"void main() { gl_Position = Projection * View * Model * vec4( PositionIn, 0.0, 1.0 ); UV0 = PositionIn; }";
 			
 			const char *fsource = "#version 330\n"
 			"in vec2 UV0;"
@@ -39,10 +40,21 @@ int main( int argc, char *argv[] )
 			"void main() { FragColor = texture( DiffuseMap, UV0 ); }";
 			
 			GLuint shaderProgram = LoadProgram( vsource, 0, fsource );
+			
+			glUseProgram( shaderProgram );
+			GLuint modelUniformLocation = glGetUniformLocation( shaderProgram, "Model" );
+			GLuint viewUniformLocation = glGetUniformLocation( shaderProgram, "View" );
+			GLuint projectionUniformLocation = glGetUniformLocation( shaderProgram, "Projection" );
+			
 			GLuint quad = CreateQuad();
 			
 			Texture texture;
-			LoadTexture( "./textures/face.png", &texture );
+			LoadTexture( "./textures/face_norm.png", &texture );
+			
+			glm::mat4 modelMatrix = glm::scale( glm::mat4(), glm::vec3( 128.0f, 128.0f, 1.0f ) );
+			
+			glm::mat4 viewMatrix;
+			glm::mat4 projectionMatrix = glm::ortho( 0.0f, 640.0f, 480.0f, 0.0f, -1.0f, 1.0f );
 			
 			bool running = true;
 			while( running )
@@ -52,6 +64,11 @@ int main( int argc, char *argv[] )
 				{
 					if( e.type == SDL_QUIT )
 						running = false;
+					else if( e.type == SDL_KEYDOWN )
+					{
+						if( e.key.keysym.sym == SDLK_ESCAPE )
+							running = false;
+					}
 				}
 				
 				// update
@@ -64,6 +81,10 @@ int main( int argc, char *argv[] )
 				glUseProgram( shaderProgram );
 				
 				glBindTexture( GL_TEXTURE_2D, texture.id );
+				
+				glUniformMatrix4fv( modelUniformLocation, 1, GL_FALSE, &modelMatrix[0][0] );
+				glUniformMatrix4fv( viewUniformLocation, 1, GL_FALSE, &viewMatrix[0][0] );
+				glUniformMatrix4fv( projectionUniformLocation, 1, GL_FALSE, &projectionMatrix[0][0] );
 				
 				glBindVertexArray( quad );
 				glDrawArrays( GL_TRIANGLES, 0, 12 );
