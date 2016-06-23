@@ -9,5 +9,7 @@
 #ifndef arbitrage_h
 #define arbitrage_h
 
+#include "rendering.h"
+
 
 #endif /* arbitrage_h */
