@@ -9,9 +9,7 @@
 #ifndef rendering_h
 #define rendering_h
 
-#include <iostream>
-#include <OpenGL/gl3.h>
-#include <SDL2_image/SDL_image.h>
+#include "arb_inc.h"
 
 struct Texture
 {

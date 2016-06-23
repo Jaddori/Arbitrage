@@ -9,8 +9,7 @@
 #ifndef arbitrage_h
 #define arbitrage_h
 
-#include <SDL2/SDL.h>
-#include <OpenGL/gl3.h>
+#include "arb_inc.h"
 #include "glm.hpp"
 #include "matrix_transform.hpp"
 #include "rendering.h"

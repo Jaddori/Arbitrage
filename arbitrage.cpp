@@ -17,12 +17,18 @@ int main( int argc, char *argv[] )
 	SDL_GL_SetAttribute( SDL_GL_CONTEXT_MINOR_VERSION, 2 );
 	SDL_GL_SetAttribute( SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE );
 	
-	SDL_Window *window = SDL_CreateWindow( "Arbitrage", 0, 0, 640, 480, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN );
+	SDL_Window *window = SDL_CreateWindow( "Arbitrage", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 640, 480, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN );
 	if( window )
 	{
 		SDL_GLContext renderContext = SDL_GL_CreateContext( window );
 		if( renderContext )
 		{
+#ifdef WIN32
+			glewExperimental = GL_TRUE;
+			if( glewInit() != GLEW_OK )
+				return -1;
+#endif
+
 			SDL_GL_SetSwapInterval( 1 );
 			
 			const char *vsource = "#version 330\n"
