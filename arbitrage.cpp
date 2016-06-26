@@ -31,38 +31,40 @@ int main( int argc, char *argv[] )
 
 			SDL_GL_SetSwapInterval( 1 );
 			
-			const char *vsource = "#version 330\n"
+			const char *vsource = "#version 430\n"
 			"layout(location=0) in vec2 PositionIn;"
 			"out vec2 UV0;"
-			"uniform mat4 Model;"
-			"uniform mat4 View;"
-			"uniform mat4 Projection;"
+			"layout(location=0) uniform mat4 Model;"
+			"layout(location=1) uniform mat4 View;"
+			"layout(location=2) uniform mat4 Projection;"
 			"void main() { gl_Position = Projection * View * Model * vec4( PositionIn, 0.0, 1.0 ); UV0 = PositionIn; }";
 			
-			const char *fsource = "#version 330\n"
+			const char *fsource = "#version 430\n"
 			"in vec2 UV0;"
 			"out vec4 FragColor;"
-			"uniform sampler2D DiffuseMap;"
+			"layout(location=3) uniform sampler2D DiffuseMap;"
 			"void main() { FragColor = texture( DiffuseMap, UV0 ); }";
 			
 			GLuint shaderProgram = LoadProgram( vsource, 0, fsource );
-			
 			glUseProgram( shaderProgram );
-			GLuint modelUniformLocation = glGetUniformLocation( shaderProgram, "Model" );
-			GLuint viewUniformLocation = glGetUniformLocation( shaderProgram, "View" );
-			GLuint projectionUniformLocation = glGetUniformLocation( shaderProgram, "Projection" );
 			
 			GLuint quad = CreateQuad();
+			glBindVertexArray( quad );
 			
 			Texture texture;
 			LoadTexture( "./textures/face_norm.png", &texture );
-			
-			glm::mat4 modelMatrix = glm::scale( glm::mat4(), glm::vec3( 128.0f, 128.0f, 1.0f ) );
-			
-			glm::mat4 viewMatrix;
+			glBindTexture( GL_TEXTURE_2D, texture.id );
+
+			WorldMatrix( 32, 32, 128, 128, 0.0f );
+			ViewMatrix( 0.0f, 0.0f );
+
 			glm::mat4 projectionMatrix = glm::ortho( 0.0f, 640.0f, 480.0f, 0.0f, -1.0f, 1.0f );
+			glUniformMatrix4fv( 2, 1, GL_FALSE, &projectionMatrix[0][0] );
+
+			lua_State* lua = CreateLua();
+			RunScript( lua, "./scripts/main.lua" );
 			
-			bool running = true;
+			bool running = true, canUpdate = true, canRender = true;
 			while( running )
 			{
 				SDL_Event e;
@@ -78,27 +80,45 @@ int main( int argc, char *argv[] )
 				}
 				
 				// update
-				
+				if( canUpdate )
+				{
+					lua_getglobal( lua, "MainUpdate" );
+					if( lua_pcall( lua, 0, 0, 0 ) != 0 )
+					{
+						std::cout << "Lua error: " << lua_tostring( lua, -1 ) << std::endl;
+						canUpdate = false;
+					}
+				}
 				
 				// render
 				glClearColor( 1.0f, 0.0f, 0.0f, 1.0f );
 				glClear( GL_COLOR_BUFFER_BIT );
-				
-				glUseProgram( shaderProgram );
-				
-				glBindTexture( GL_TEXTURE_2D, texture.id );
-				
-				glUniformMatrix4fv( modelUniformLocation, 1, GL_FALSE, &modelMatrix[0][0] );
-				glUniformMatrix4fv( viewUniformLocation, 1, GL_FALSE, &viewMatrix[0][0] );
-				glUniformMatrix4fv( projectionUniformLocation, 1, GL_FALSE, &projectionMatrix[0][0] );
-				
-				glBindVertexArray( quad );
-				glDrawArrays( GL_TRIANGLES, 0, 12 );
+
+				if( canRender )
+				{
+					lua_getglobal( lua, "MainRender" );
+					if( lua_pcall( lua, 0, 0, 0 ) != 0 )
+					{
+						std::cout << "Lua error: " << lua_tostring( lua, -1 ) << std::endl;
+						canRender = false;
+					}
+				}
+
+				WorldMatrix( 32, 32, 128, 128, 0.0f );
+				RenderQuad();
 				
 				SDL_GL_SwapWindow( window );
 			}
+
+			DestroyLua( lua );
+
+			SDL_GL_DeleteContext( renderContext );
 		}
+
+		SDL_DestroyWindow( window );
 	}
+
+	SDL_Quit();
 	
 	return 0;
 }

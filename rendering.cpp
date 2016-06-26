@@ -140,3 +140,20 @@ bool LoadTexture( const char *filename, Texture *texture )
 	
 	return result;
 }
+
+void WorldMatrix( float x, float y, float width, float height, float rotation )
+{
+	glm::mat4 world = glm::rotate( glm::scale( glm::translate( glm::mat4(), glm::vec3( x, y, 0.0f ) ), glm::vec3( width, height, 1.0f ) ), rotation, glm::vec3( 0.0f, 0.0f, 1.0f ) );
+	glUniformMatrix4fv( 0, 1, GL_FALSE, &world[0][0] );
+}
+
+void ViewMatrix( float x, float y )
+{
+	glm::mat4 view = glm::translate( glm::mat4(), glm::vec3( -x, -y, 0.0f ) );
+	glUniformMatrix4fv( 1, 1, GL_FALSE, &view[0][0] );
+}
+
+void RenderQuad()
+{
+	glDrawArrays( GL_TRIANGLES, 0, 12 );
+}

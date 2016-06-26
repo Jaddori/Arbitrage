@@ -12,4 +12,8 @@
 #include <SDL2_image/SDL_image.h>
 #endif
 
+#include "lua.hpp"
+#include "glm.hpp"
+#include "matrix_transform.hpp"
+
 #endif

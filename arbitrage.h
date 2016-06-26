@@ -10,8 +10,8 @@
 #define arbitrage_h
 
 #include "arb_inc.h"
-#include "glm.hpp"
-#include "matrix_transform.hpp"
+
 #include "rendering.h"
+#include "scripting.h"
 
 #endif /* arbitrage_h */

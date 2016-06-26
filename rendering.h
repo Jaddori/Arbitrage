@@ -1,11 +1,3 @@
-//
-//  rendering.h
-//  Arbitrage
-//
-//  Created by Niclas Olsson on 2016-06-23.
-//  Copyright © 2016 SpaceCat. All rights reserved.
-//
-
 #ifndef rendering_h
 #define rendering_h
 
@@ -21,5 +13,9 @@ GLuint LoadShader( const char *source, GLenum type );
 GLuint LoadProgram( const char *vsource, const char *gsource, const char *fsource );
 GLuint CreateQuad();
 bool LoadTexture( const char *filename, Texture *texture );
+
+void WorldMatrix( float x, float y, float width, float height, float rotation );
+void ViewMatrix( float x, float y );
+void RenderQuad();
 
 #endif /* rendering_h */
