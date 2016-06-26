@@ -8,6 +8,10 @@
 
 #include "arbitrage.h"
 
+extern GLuint g_modelUniformLocation;
+extern GLuint g_viewUniformLocation;
+extern GLuint g_projectionUniformLocation;
+
 int main( int argc, char *argv[] )
 {
 	if( SDL_Init( SDL_INIT_EVERYTHING ) < 0 )
@@ -28,25 +32,32 @@ int main( int argc, char *argv[] )
 			if( glewInit() != GLEW_OK )
 				return -1;
 #endif
-
 			SDL_GL_SetSwapInterval( 1 );
 			
-			const char *vsource = "#version 430\n"
+			const char *vsource = "#version 330\n"
 			"layout(location=0) in vec2 PositionIn;"
 			"out vec2 UV0;"
-			"layout(location=0) uniform mat4 Model;"
-			"layout(location=1) uniform mat4 View;"
-			"layout(location=2) uniform mat4 Projection;"
+			"uniform mat4 Model;"
+			"uniform mat4 View;"
+			"uniform mat4 Projection;"
 			"void main() { gl_Position = Projection * View * Model * vec4( PositionIn, 0.0, 1.0 ); UV0 = PositionIn; }";
 			
-			const char *fsource = "#version 430\n"
+			const char *fsource = "#version 330\n"
 			"in vec2 UV0;"
 			"out vec4 FragColor;"
-			"layout(location=3) uniform sampler2D DiffuseMap;"
+			"uniform sampler2D DiffuseMap;"
 			"void main() { FragColor = texture( DiffuseMap, UV0 ); }";
 			
 			GLuint shaderProgram = LoadProgram( vsource, 0, fsource );
 			glUseProgram( shaderProgram );
+			
+			g_modelUniformLocation = glGetUniformLocation( shaderProgram, "Model" );
+			g_viewUniformLocation = glGetUniformLocation( shaderProgram, "View" );
+			g_projectionUniformLocation = glGetUniformLocation( shaderProgram, "Projection" );
+			
+			/*std::cout << "Model Location: " << g_modelUniformLocation << std::endl;
+			std::cout << "View location: " << g_viewUniformLocation << std::endl;
+			std::cout << "Projection Location: " << g_projectionUniformLocation << std::endl;*/
 			
 			GLuint quad = CreateQuad();
 			glBindVertexArray( quad );
@@ -59,7 +70,7 @@ int main( int argc, char *argv[] )
 			ViewMatrix( 0.0f, 0.0f );
 
 			glm::mat4 projectionMatrix = glm::ortho( 0.0f, 640.0f, 480.0f, 0.0f, -1.0f, 1.0f );
-			glUniformMatrix4fv( 2, 1, GL_FALSE, &projectionMatrix[0][0] );
+			glUniformMatrix4fv( g_projectionUniformLocation, 1, GL_FALSE, &projectionMatrix[0][0] );
 
 			lua_State* lua = CreateLua();
 			RunScript( lua, "./scripts/main.lua" );

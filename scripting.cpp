@@ -23,7 +23,8 @@ void RunScript( lua_State* lua, const char *filename )
 		std::cout << "Script error: " << lua_tostring( lua, -1 ) << std::endl;
 }
 
-LUAFUNC(WorldMatrix)
+//LUAFUNC(WorldMatrix)
+int lua_WorldMatrix( lua_State* lua )
 {
 	int result = 0;
 
@@ -41,7 +42,8 @@ LUAFUNC(WorldMatrix)
 	return result;
 }
 
-LUAFUNC(ViewMatrix)
+//LUAFUNC(ViewMatrix)
+int lua_ViewMatrix( lua_State* lua )
 {
 	int result = 0;
 
@@ -56,7 +58,8 @@ LUAFUNC(ViewMatrix)
 	return result;
 }
 
-LUAFUNC(RenderQuad)
+//LUAFUNC(RenderQuad)
+int lua_RenderQuad( lua_State* lua )
 {
 	int result = 0;
 
