@@ -3,13 +3,19 @@
 
 #include <iostream>
 
-#ifdef WIN32
+#ifdef WIN32						// WIN32
+
 #include "GL/glew.h"
 #include "SDL.h"
 #include "SDL_image.h"
-#else
+
+#else								// Linux / OSX
+
 #include <OpenGL/gl3.h>
 #include <SDL2_image/SDL_image.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+
 #endif
 
 #include "lua.hpp"

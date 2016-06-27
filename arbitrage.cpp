@@ -66,14 +66,16 @@ int main( int argc, char *argv[] )
 			LoadTexture( "./textures/face_norm.png", &texture );
 			glBindTexture( GL_TEXTURE_2D, texture.id );
 
-			WorldMatrix( 32, 32, 128, 128, 0.0f );
+			WorldMatrix( 32, 32, 128, 128 );
 			ViewMatrix( 0.0f, 0.0f );
 
 			glm::mat4 projectionMatrix = glm::ortho( 0.0f, 640.0f, 480.0f, 0.0f, -1.0f, 1.0f );
 			glUniformMatrix4fv( g_projectionUniformLocation, 1, GL_FALSE, &projectionMatrix[0][0] );
 
+			ScriptHandle mainHandle;
+			
 			lua_State* lua = CreateLua();
-			RunScript( lua, "./scripts/main.lua" );
+			RunScript( lua, "./scripts/main.lua", &mainHandle );
 			
 			bool running = true, canUpdate = true, canRender = true;
 			while( running )
@@ -91,7 +93,9 @@ int main( int argc, char *argv[] )
 				}
 				
 				// update
-				if( canUpdate )
+				HotloadScripts( lua, &mainHandle, 1 );
+				
+				if( canUpdate && mainHandle.valid )
 				{
 					lua_getglobal( lua, "MainUpdate" );
 					if( lua_pcall( lua, 0, 0, 0 ) != 0 )
@@ -105,7 +109,7 @@ int main( int argc, char *argv[] )
 				glClearColor( 1.0f, 0.0f, 0.0f, 1.0f );
 				glClear( GL_COLOR_BUFFER_BIT );
 
-				if( canRender )
+				if( canRender && mainHandle.valid )
 				{
 					lua_getglobal( lua, "MainRender" );
 					if( lua_pcall( lua, 0, 0, 0 ) != 0 )
@@ -115,7 +119,7 @@ int main( int argc, char *argv[] )
 					}
 				}
 
-				WorldMatrix( 32, 32, 128, 128, 0.0f );
+				WorldMatrix( 32, 32, 128, 128 );
 				RenderQuad();
 				
 				SDL_GL_SwapWindow( window );

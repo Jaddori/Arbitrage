@@ -14,7 +14,7 @@ GLuint LoadProgram( const char *vsource, const char *gsource, const char *fsourc
 GLuint CreateQuad();
 bool LoadTexture( const char *filename, Texture *texture );
 
-void WorldMatrix( float x, float y, float width, float height, float rotation );
+void WorldMatrix( float x, float y, float width, float height );
 void ViewMatrix( float x, float y );
 void RenderQuad();
 

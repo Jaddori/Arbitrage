@@ -145,12 +145,11 @@ bool LoadTexture( const char *filename, Texture *texture )
 	return result;
 }
 
-void WorldMatrix( float x, float y, float width, float height, float rotation )
+void WorldMatrix( float x, float y, float width, float height )
 {
-	glm::mat4 world = glm::rotate( glm::scale( glm::translate( glm::mat4(), glm::vec3( x, y, 0.0f ) ), glm::vec3( width, height, 1.0f ) ), rotation, glm::vec3( 0.0f, 0.0f, 1.0f ) );
-	glUniformMatrix4fv( g_modelUniformLocation, 1, GL_FALSE, &world[0][0] );
+	glm::mat4  world = glm::scale( glm::translate( glm::mat4(), glm::vec3( x, y, 0.0f ) ), glm::vec3( width, height, 1.0f ) );
 	
-	//std::cout << "World Location: " << g_modelUniformLocation << std::endl;
+	glUniformMatrix4fv( g_modelUniformLocation, 1, GL_FALSE, &world[0][0] );
 }
 
 void ViewMatrix( float x, float y )
