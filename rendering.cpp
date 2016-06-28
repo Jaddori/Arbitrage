@@ -162,3 +162,9 @@ void RenderQuad()
 {
 	glDrawArrays( GL_TRIANGLES, 0, 12 );
 }
+
+void Render( float x, float y, float width, float height )
+{
+	WorldMatrix( x, y, width, height );
+	RenderQuad();
+}

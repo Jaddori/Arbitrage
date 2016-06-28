@@ -17,5 +17,6 @@ bool LoadTexture( const char *filename, Texture *texture );
 void WorldMatrix( float x, float y, float width, float height );
 void ViewMatrix( float x, float y );
 void RenderQuad();
+void Render( float x, float y, float width, float height );
 
 #endif /* rendering_h */

@@ -8,6 +8,7 @@ lua_State* CreateLua()
 	lua_register( result, "WorldMatrix", LUASIG(WorldMatrix) );
 	lua_register( result, "ViewMatrix", LUASIG(ViewMatrix) );
 	lua_register( result, "RenderQuad", LUASIG(RenderQuad) );
+	lua_register( result, "Render", LUASIG(Render) );
 
 	return result;
 }
@@ -36,7 +37,6 @@ void RunScript( lua_State* lua, const char *filename, ScriptHandle *handle )
 		if( stat( filename, &buf ) >= 0 )
 		{
 			handle->lastWriteTime = buf.st_mtimespec.tv_sec;
-			std::cout << "Last write time: " << handle->lastWriteTime << std::endl;
 		}
 		else
 			std::cout << "Failed to get file information about script file \"" << filename << "\"." << std::endl;
@@ -110,5 +110,22 @@ int lua_RenderQuad( lua_State* lua )
 
 	RenderQuad();
 
+	return result;
+}
+
+int lua_Render( lua_State* lua )
+{
+	int result = 0;
+	
+	if( lua_gettop( lua ) >= 4 )
+	{
+		float x = (float)lua_tonumber( lua, 1 );
+		float y = (float)lua_tonumber( lua, 2 );
+		float w = (float)lua_tonumber( lua, 3 );
+		float h = (float)lua_tonumber( lua, 4 );
+		
+		Render( x, y, w, h );
+	}
+	
 	return result;
 }

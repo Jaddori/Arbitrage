@@ -26,5 +26,6 @@ void HotloadScripts( lua_State* lua, ScriptHandle *handles, int nhandles );
 int lua_WorldMatrix( lua_State* lua );
 int lua_ViewMatrix( lua_State* lua );
 int lua_RenderQuad( lua_State* lua );
+int lua_Render( lua_State* lua );
 
 #endif
