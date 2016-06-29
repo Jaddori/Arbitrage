@@ -1,9 +1,11 @@
+require "./scripts/console"
+
 function MainUpdate()
+	UpdateConsole()
 end
 
 function MainRender()
-	--WorldMatrix( 64, 64, 256, 32 );
-	--RenderQuad();
-
-Render( 64, 64, 256, 32 );
+	Color( 1, 1, 1, 1 )
+	Render( 64, 64, 0, 256, 32 )
+	RenderConsole()
 end

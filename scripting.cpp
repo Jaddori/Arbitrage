@@ -1,14 +1,92 @@
 #include "scripting.h"
 
+LUAFUNC(lua_WorldMatrix)
+{
+	int result = 0;
+	
+	if( lua_gettop( lua ) >= 4 )
+	{
+		float x = (float)lua_tonumber( lua, 1 );
+		float y = (float)lua_tonumber( lua, 2 );
+		float z = (float)lua_tonumber( lua, 3 );
+		float w = (float)lua_tonumber( lua, 4 );
+		float h = (float)lua_tonumber( lua, 5 );
+		
+		WorldMatrix( x, y, z, w, h );
+	}
+	
+	return result;
+}
+
+LUAFUNC(lua_ViewMatrix)
+{
+	int result = 0;
+	
+	if( lua_gettop( lua ) >= 2 )
+	{
+		float x = (float)lua_tonumber( lua, 1 );
+		float y = (float)lua_tonumber( lua, 2 );
+		
+		ViewMatrix( x, y );
+	}
+	
+	return result;
+}
+
+LUAFUNC(lua_Color)
+{
+	int result = 0;
+	
+	if( lua_gettop( lua ) >= 4 )
+	{
+		float r = (float)lua_tonumber( lua, 1 );
+		float g = (float)lua_tonumber( lua, 2 );
+		float b = (float)lua_tonumber( lua, 3 );
+		float a = (float)lua_tonumber( lua, 4 );
+		
+		Color( r, g, b, a );
+	}
+	
+	return result;
+}
+
+LUAFUNC(lua_RenderQuad)
+{
+	int result = 0;
+	
+	RenderQuad();
+	
+	return result;
+}
+
+LUAFUNC(lua_Render)
+{
+	int result = 0;
+	
+	if( lua_gettop( lua ) >= 4 )
+	{
+		float x = (float)lua_tonumber( lua, 1 );
+		float y = (float)lua_tonumber( lua, 2 );
+		float z = (float)lua_tonumber( lua, 3 );
+		float w = (float)lua_tonumber( lua, 4 );
+		float h = (float)lua_tonumber( lua, 5 );
+		
+		Render( x, y, z, w, h );
+	}
+	
+	return result;
+}
+
 lua_State* CreateLua()
 {
 	lua_State* result = luaL_newstate();
 	luaL_openlibs( result );
 
-	lua_register( result, "WorldMatrix", LUASIG(WorldMatrix) );
-	lua_register( result, "ViewMatrix", LUASIG(ViewMatrix) );
-	lua_register( result, "RenderQuad", LUASIG(RenderQuad) );
-	lua_register( result, "Render", LUASIG(Render) );
+	lua_register( result, "WorldMatrix", lua_WorldMatrix );
+	lua_register( result, "ViewMatrix", lua_ViewMatrix );
+	lua_register( result, "Color", lua_Color );
+	lua_register( result, "RenderQuad", lua_RenderQuad );
+	lua_register( result, "Render", lua_Render );
 
 	return result;
 }
@@ -67,65 +145,4 @@ void HotloadScripts( lua_State* lua, ScriptHandle *handles, int nhandles )
 			}
 		}
 	}
-}
-
-//LUAFUNC(WorldMatrix)
-int lua_WorldMatrix( lua_State* lua )
-{
-	int result = 0;
-
-	if( lua_gettop( lua ) >= 4 )
-	{
-		float x = (float)lua_tonumber( lua, 1 );
-		float y = (float)lua_tonumber( lua, 2 );
-		float w = (float)lua_tonumber( lua, 3 );
-		float h = (float)lua_tonumber( lua, 4 );
-
-		WorldMatrix( x, y, w, h );
-	}
-
-	return result;
-}
-
-//LUAFUNC(ViewMatrix)
-int lua_ViewMatrix( lua_State* lua )
-{
-	int result = 0;
-
-	if( lua_gettop( lua ) >= 2 )
-	{
-		float x = (float)lua_tonumber( lua, 1 );
-		float y = (float)lua_tonumber( lua, 2 );
-
-		ViewMatrix( x, y );
-	}
-
-	return result;
-}
-
-//LUAFUNC(RenderQuad)
-int lua_RenderQuad( lua_State* lua )
-{
-	int result = 0;
-
-	RenderQuad();
-
-	return result;
-}
-
-int lua_Render( lua_State* lua )
-{
-	int result = 0;
-	
-	if( lua_gettop( lua ) >= 4 )
-	{
-		float x = (float)lua_tonumber( lua, 1 );
-		float y = (float)lua_tonumber( lua, 2 );
-		float w = (float)lua_tonumber( lua, 3 );
-		float h = (float)lua_tonumber( lua, 4 );
-		
-		Render( x, y, w, h );
-	}
-	
-	return result;
 }

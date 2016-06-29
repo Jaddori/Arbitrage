@@ -11,6 +11,7 @@
 GLuint g_modelUniformLocation = 0;
 GLuint g_viewUniformLocation = 0;
 GLuint g_projectionUniformLocation = 0;
+GLuint g_colorUniformLocation = 0;
 
 GLuint LoadShader( const char *source, GLenum type )
 {
@@ -145,17 +146,41 @@ bool LoadTexture( const char *filename, Texture *texture )
 	return result;
 }
 
-void WorldMatrix( float x, float y, float width, float height )
+void WorldMatrix( float x, float y, float z, float width, float height )
 {
-	glm::mat4  world = glm::scale( glm::translate( glm::mat4(), glm::vec3( x, y, 0.0f ) ), glm::vec3( width, height, 1.0f ) );
+	//glm::mat4  world = glm::scale( glm::translate( glm::mat4(), glm::vec3( x, y, 0.0f ) ), glm::vec3( width, height, 1.0f ) );
+	//glUniformMatrix4fv( g_modelUniformLocation, 1, GL_FALSE, &world[0][0] );
 	
-	glUniformMatrix4fv( g_modelUniformLocation, 1, GL_FALSE, &world[0][0] );
+	float world[16] =
+	{
+		width, 0, 0, 0,
+		0, height, 0, 0,
+		0, 0, 1, 0,
+		x, y, z, 1
+	};
+	
+	glUniformMatrix4fv( g_modelUniformLocation, 1, GL_FALSE, world );
 }
 
 void ViewMatrix( float x, float y )
 {
-	glm::mat4 view = glm::translate( glm::mat4(), glm::vec3( -x, -y, 0.0f ) );
-	glUniformMatrix4fv( g_viewUniformLocation, 1, GL_FALSE, &view[0][0] );
+	//glm::mat4 view = glm::translate( glm::mat4(), glm::vec3( -x, -y, 0.0f ) );
+	//glUniformMatrix4fv( g_viewUniformLocation, 1, GL_FALSE, &view[0][0] );
+	
+	float view[16]
+	{
+		1, 0, 0, 0,
+		0, 1, 0, 0,
+		0, 0, 1, 0,
+		-x, -y, 0, 1
+	};
+	
+	glUniformMatrix4fv( g_viewUniformLocation, 1, GL_FALSE, view );
+}
+
+void Color( float r, float g, float b, float a )
+{
+	glUniform4f( g_colorUniformLocation, r, g, b, a );
 }
 
 void RenderQuad()
@@ -163,8 +188,8 @@ void RenderQuad()
 	glDrawArrays( GL_TRIANGLES, 0, 12 );
 }
 
-void Render( float x, float y, float width, float height )
+void Render( float x, float y, float z, float width, float height )
 {
-	WorldMatrix( x, y, width, height );
+	WorldMatrix( x, y, z, width, height );
 	RenderQuad();
 }

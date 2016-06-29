@@ -11,6 +11,7 @@
 extern GLuint g_modelUniformLocation;
 extern GLuint g_viewUniformLocation;
 extern GLuint g_projectionUniformLocation;
+extern GLuint g_colorUniformLocation;
 
 int main( int argc, char *argv[] )
 {
@@ -34,6 +35,10 @@ int main( int argc, char *argv[] )
 #endif
 			SDL_GL_SetSwapInterval( 1 );
 			
+			glEnable( GL_BLEND );
+			glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+			glEnable( GL_DEPTH_TEST );
+			
 			const char *vsource = "#version 330\n"
 			"layout(location=0) in vec2 PositionIn;"
 			"out vec2 UV0;"
@@ -46,7 +51,8 @@ int main( int argc, char *argv[] )
 			"in vec2 UV0;"
 			"out vec4 FragColor;"
 			"uniform sampler2D DiffuseMap;"
-			"void main() { FragColor = texture( DiffuseMap, UV0 ); }";
+			"uniform vec4 Color;"
+			"void main() { FragColor = texture( DiffuseMap, UV0 ) * Color; }";
 			
 			GLuint shaderProgram = LoadProgram( vsource, 0, fsource );
 			glUseProgram( shaderProgram );
@@ -54,6 +60,7 @@ int main( int argc, char *argv[] )
 			g_modelUniformLocation = glGetUniformLocation( shaderProgram, "Model" );
 			g_viewUniformLocation = glGetUniformLocation( shaderProgram, "View" );
 			g_projectionUniformLocation = glGetUniformLocation( shaderProgram, "Projection" );
+			g_colorUniformLocation = glGetUniformLocation( shaderProgram, "Color" );
 			
 			/*std::cout << "Model Location: " << g_modelUniformLocation << std::endl;
 			std::cout << "View location: " << g_viewUniformLocation << std::endl;
@@ -66,11 +73,11 @@ int main( int argc, char *argv[] )
 			LoadTexture( "./textures/face_norm.png", &texture );
 			glBindTexture( GL_TEXTURE_2D, texture.id );
 
-			WorldMatrix( 32, 32, 128, 128 );
-			ViewMatrix( 0.0f, 0.0f );
-
 			glm::mat4 projectionMatrix = glm::ortho( 0.0f, 640.0f, 480.0f, 0.0f, -1.0f, 1.0f );
 			glUniformMatrix4fv( g_projectionUniformLocation, 1, GL_FALSE, &projectionMatrix[0][0] );
+			WorldMatrix( 0.0f, 0.0f, 0.0f, 0.0f, 0.0f );
+			ViewMatrix( 0.0f, 0.0f );
+			Color( 1.0f, 1.0f, 1.0f, 1.0f );
 
 			ScriptHandle mainHandle;
 			
@@ -107,7 +114,7 @@ int main( int argc, char *argv[] )
 				
 				// render
 				glClearColor( 1.0f, 0.0f, 0.0f, 1.0f );
-				glClear( GL_COLOR_BUFFER_BIT );
+				glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
 				if( canRender && mainHandle.valid )
 				{
@@ -118,9 +125,6 @@ int main( int argc, char *argv[] )
 						canRender = false;
 					}
 				}
-
-				WorldMatrix( 32, 32, 128, 128 );
-				RenderQuad();
 				
 				SDL_GL_SwapWindow( window );
 			}
