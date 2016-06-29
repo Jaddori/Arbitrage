@@ -87,17 +87,19 @@ int main( int argc, char *argv[] )
 			bool running = true, canUpdate = true, canRender = true;
 			while( running )
 			{
+				SyncInput();
+				
 				SDL_Event e;
 				while( SDL_PollEvent( &e ) )
 				{
 					if( e.type == SDL_QUIT )
 						running = false;
-					else if( e.type == SDL_KEYDOWN )
-					{
-						if( e.key.keysym.sym == SDLK_ESCAPE )
-							running = false;
-					}
+					else
+						GetInput( &e );
 				}
+				
+				if( KeyDown( SDLK_ESCAPE ) )
+					running = false;
 				
 				// update
 				HotloadScripts( lua, &mainHandle, 1 );

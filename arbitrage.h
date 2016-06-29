@@ -13,5 +13,6 @@
 
 #include "rendering.h"
 #include "scripting.h"
+#include "input.h"
 
 #endif /* arbitrage_h */

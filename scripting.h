@@ -3,6 +3,7 @@
 
 #include "arb_inc.h"
 #include "rendering.h"
+#include "input.h"
 
 #define LUAFUNC(name) int name ( lua_State* lua )
 

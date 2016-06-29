@@ -1,0 +1,125 @@
+//
+//  input.cpp
+//  Arbitrage
+//
+//  Created by Niclas Olsson on 2016-06-29.
+//  Copyright © 2016 SpaceCat. All rights reserved.
+//
+
+#include "input.h"
+
+static Input g_input = {};
+
+void SyncInput()
+{
+	memcpy( g_input.prevKeys, g_input.keys, INPUT_MAX_KEYS );
+	memcpy( g_input.prevButtons, g_input.buttons, INPUT_MAX_BUTTONS );
+	
+	g_input.prevMouseX = g_input.mouseX;
+	g_input.prevMouseY = g_input.mouseY;
+	g_input.prevMouseWheel = g_input.mouseWheel;
+}
+
+bool GetInput( SDL_Event *e )
+{
+	bool result = true;
+	
+	switch( e->type )
+	{
+		case SDL_KEYDOWN:
+			g_input.keys[e->key.keysym.sym] = 1;
+			break;
+			
+		case SDL_KEYUP:
+			g_input.keys[e->key.keysym.sym] = 0;
+			break;
+			
+		case SDL_MOUSEMOTION:
+			g_input.mouseX = e->motion.x;
+			g_input.mouseY = e->motion.y;
+			break;
+			
+		case SDL_MOUSEBUTTONDOWN:
+			g_input.buttons[e->button.button] = 1;
+			break;
+			
+		case SDL_MOUSEBUTTONUP:
+			g_input.buttons[e->button.button] = 0;
+			break;
+			
+		case SDL_MOUSEWHEEL:
+			g_input.mouseWheel = e->wheel.y;
+			break;
+			
+		default:
+			result = false;
+			break;
+	}
+	
+	return result;
+}
+
+bool KeyDown( int key )
+{
+	return ( g_input.keys[key] != 0 );
+}
+
+bool KeyUp( int key )
+{
+	return ( g_input.keys[key] == 0 );
+}
+
+bool KeyPressed( int key )
+{
+	if( g_input.keys[key] == 0 )
+		return false;
+	return ( g_input.prevKeys[key] == 0 );
+}
+
+bool KeyReleased( int key )
+{
+	if( g_input.prevKeys[key] == 0 )
+		return false;
+	return ( g_input.keys[key] == 0 );
+}
+
+bool ButtonDown( int button )
+{
+	return ( g_input.buttons[button] != 0 );
+}
+
+bool ButtonUp( int button )
+{
+	return ( g_input.buttons[button] == 0 );
+}
+
+bool ButtonPressed( int button )
+{
+	if( g_input.buttons[button] == 0 )
+		return false;
+	return ( g_input.prevButtons[button] == 0 );
+}
+
+bool ButtonReleased( int button )
+{
+	if( g_input.prevButtons[button] == 0 )
+		return false;
+	return ( g_input.buttons[button] == 0 );
+}
+
+void MousePosition( int *x, int *y )
+{
+	*x = g_input.mouseX;
+	*y = g_input.mouseY;
+}
+
+void MouseDeltaPosition( int *x, int *y )
+{
+	*x = g_input.mouseX - g_input.prevMouseX;
+	*y = g_input.mouseY - g_input.prevMouseY;
+}
+
+int MouseDeltaWheel()
+{
+	return ( g_input.mouseWheel - g_input.prevMouseWheel );
+}
