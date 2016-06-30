@@ -8,10 +8,28 @@
 
 #include "rendering.h"
 
+const char *g_vertexShaderSource = "#version 330\n"
+"layout(location=0) in vec2 PositionIn;"
+"out vec2 UV0;"
+"uniform mat4 Model;"
+"uniform mat4 View;"
+"uniform mat4 Projection;"
+"uniform vec4 UVOffset;"
+"void main() { gl_Position = Projection * View * Model * vec4( PositionIn, 0.0, 1.0 );"
+"UV0 = ( PositionIn * UVOffset.zw ) + UVOffset.xy; }";
+
+const char *g_fragmentShaderSource = "#version 330\n"
+"in vec2 UV0;"
+"out vec4 FragColor;"
+"uniform sampler2D DiffuseMap;"
+"uniform vec4 Color;"
+"void main() { FragColor = texture( DiffuseMap, UV0 ) * Color; }";
+
 GLuint g_modelUniformLocation = 0;
 GLuint g_viewUniformLocation = 0;
 GLuint g_projectionUniformLocation = 0;
 GLuint g_colorUniformLocation = 0;
+GLuint g_uvOffsetUniformLocation = 0;
 
 GLuint LoadShader( const char *source, GLenum type )
 {
@@ -146,6 +164,40 @@ bool LoadTexture( const char *filename, Texture *texture )
 	return result;
 }
 
+bool LoadFont( const char *imgName, const char *infoName, Font *font )
+{
+	bool result = false;
+	
+	if( LoadTexture( imgName, &font->texture ) )
+	{
+		FILE *file = fopen( infoName, "rb" );
+		if( file )
+		{
+			//fread( &font->height, 1, 1, file );
+			fread( font->widths, 1, FONT_RANGE, file );
+			fclose( file );
+			
+			font->height = 24;
+			
+			float x = 0.0f, y = 0.0f;
+			for( int i=0; i<FONT_RANGE; i++ )
+			{
+				if( x + font->widths[i] + 1 > font->texture.width )
+				{
+					x = 0.0f;
+					y += font->height + 1;
+				}
+				
+				font->xoffsets[i] = x;
+				font->yoffsets[i] = y;
+				x += font->widths[i] + 1;
+			}
+		}
+	}
+	
+	return result;
+}
+
 void WorldMatrix( float x, float y, float z, float width, float height )
 {
 	//glm::mat4  world = glm::scale( glm::translate( glm::mat4(), glm::vec3( x, y, 0.0f ) ), glm::vec3( width, height, 1.0f ) );
@@ -183,6 +235,11 @@ void Color( float r, float g, float b, float a )
 	glUniform4f( g_colorUniformLocation, r, g, b, a );
 }
 
+void UVOffset( float x, float y, float width, float height )
+{
+	glUniform4f( g_uvOffsetUniformLocation, x, y, width, height );
+}
+
 void RenderQuad()
 {
 	glDrawArrays( GL_TRIANGLES, 0, 12 );
@@ -192,4 +249,41 @@ void Render( float x, float y, float z, float width, float height )
 {
 	WorldMatrix( x, y, z, width, height );
 	RenderQuad();
+}
+
+void RenderText( Font *font, float x, float y, const char *text, int len )
+{
+	if( len <= 0 )
+		len = strlen( text );
+	
+	float offset = 0.0f;
+	for( int i=0; i<len; i++ )
+	{
+		char c = text[i];
+		if( c == '\n' )
+		{
+			offset = 0.0f;
+			y += font->height;
+		}
+		else if( c >= 32 && c <= 127 )
+		{
+			int index = (int)c - 32;
+		
+			float height = font->height;
+			float width = font->widths[index];
+			WorldMatrix( x+offset, y, 0.0f, width, height );
+		
+			offset += width + 1;
+		
+			float xoffset = (float)font->xoffsets[index] / (float)font->texture.width;
+			float yoffset = (float)font->yoffsets[index] / (float)font->texture.height;
+		
+			width /= font->texture.width;
+			height /= font->texture.height;
+		
+			UVOffset( xoffset, yoffset, width, height );
+		
+			RenderQuad();
+		}
+	}
 }
