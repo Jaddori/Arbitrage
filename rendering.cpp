@@ -175,9 +175,8 @@ bool LoadFont( const char *imgName, const char *infoName, Font *font )
 		{
 			//fread( &font->height, 1, 1, file );
 			fread( font->widths, 1, FONT_RANGE, file );
+			fread( font->dimensions, 1, 5, file );
 			fclose( file );
-			
-			font->height = 24;
 			
 			float x = 0.0f, y = 0.0f;
 			for( int i=0; i<FONT_RANGE; i++ )
@@ -185,12 +184,12 @@ bool LoadFont( const char *imgName, const char *infoName, Font *font )
 				if( x + font->widths[i] + 1 > font->texture.width )
 				{
 					x = 0.0f;
-					y += font->height + 1;
+					y += font->height + font->paddingy;
 				}
 				
 				font->xoffsets[i] = x;
 				font->yoffsets[i] = y;
-				x += font->widths[i] + 1;
+				x += font->widths[i] + font->paddingx;
 			}
 		}
 	}
@@ -273,17 +272,25 @@ void RenderText( Font *font, float x, float y, const char *text, int len )
 			float width = font->widths[index];
 			WorldMatrix( x+offset, y, 0.0f, width, height );
 		
-			offset += width + 1;
+			//offset += width + 1;
 		
 			float xoffset = (float)font->xoffsets[index] / (float)font->texture.width;
 			float yoffset = (float)font->yoffsets[index] / (float)font->texture.height;
 		
-			width /= font->texture.width;
-			height /= font->texture.height;
+			float w = width / font->texture.width;
+			float h = height / font->texture.height;
 		
-			UVOffset( xoffset, yoffset, width, height );
+			UVOffset( xoffset, yoffset, w, h );
 		
+			glBindTexture( GL_TEXTURE_2D, 0 );
 			RenderQuad();
+			
+			WorldMatrix( x+offset, y, 0.1f, width, height );
+			
+			glBindTexture( GL_TEXTURE_2D, font->texture.id );
+			RenderQuad();
+			
+			offset += width + font->paddingx;
 		}
 	}
 }

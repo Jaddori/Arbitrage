@@ -16,8 +16,13 @@ struct Texture
 struct Font
 {
 	Texture texture;
-	uint8_t height, widths[FONT_RANGE];
+	uint8_t widths[FONT_RANGE];
 	uint8_t xoffsets[FONT_RANGE], yoffsets[FONT_RANGE];
+	union
+	{
+		uint8_t dimensions[5];
+		struct { uint8_t height, paddingx, paddingy, shadowx, shadowy; };
+	};
 };
 
 GLuint LoadShader( const char *source, GLenum type );
