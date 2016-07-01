@@ -191,13 +191,15 @@ bool LoadFont( const char *imgName, const char *infoName, Font *font )
 				font->yoffsets[i] = y;
 				x += font->widths[i] + font->paddingx;
 			}
+			
+			result = true;
 		}
 	}
 	
 	return result;
 }
 
-void WorldMatrix( float x, float y, float z, float width, float height )
+void WorldMatrix( float x, float y, float width, float height )
 {
 	//glm::mat4  world = glm::scale( glm::translate( glm::mat4(), glm::vec3( x, y, 0.0f ) ), glm::vec3( width, height, 1.0f ) );
 	//glUniformMatrix4fv( g_modelUniformLocation, 1, GL_FALSE, &world[0][0] );
@@ -207,7 +209,7 @@ void WorldMatrix( float x, float y, float z, float width, float height )
 		width, 0, 0, 0,
 		0, height, 0, 0,
 		0, 0, 1, 0,
-		x, y, z, 1
+		x, y, 0, 1
 	};
 	
 	glUniformMatrix4fv( g_modelUniformLocation, 1, GL_FALSE, world );
@@ -244,9 +246,9 @@ void RenderQuad()
 	glDrawArrays( GL_TRIANGLES, 0, 12 );
 }
 
-void Render( float x, float y, float z, float width, float height )
+void Render( float x, float y, float width, float height )
 {
-	WorldMatrix( x, y, z, width, height );
+	WorldMatrix( x, y, width, height );
 	RenderQuad();
 }
 
@@ -272,7 +274,7 @@ void RenderText( Font *font, float x, float y, const char *text, int len )
 		
 			float height = font->height;
 			float width = font->widths[index];
-			WorldMatrix( x+offset, y, 0.0f, width, height );
+			WorldMatrix( x+offset, y, width, height );
 		
 			offset += width;
 		

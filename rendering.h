@@ -31,12 +31,12 @@ GLuint CreateQuad();
 bool LoadTexture( const char *filename, Texture *texture );
 bool LoadFont( const char *imgFile, const char *infoFile, Font *font );
 
-void WorldMatrix( float x, float y, float z, float width, float height );
+void WorldMatrix( float x, float y, float width, float height );
 void ViewMatrix( float x, float y );
 void Color( float r, float g, float b, float a );
 void UVOffset( float x, float y, float width, float height );
 void RenderQuad();
-void Render( float x, float y, float z, float width, float height );
+void Render( float x, float y, float width, float height );
 void RenderText( Font *font, float x, float y, const char *text, int len = 0 );
 
 #endif /* rendering_h */

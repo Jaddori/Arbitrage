@@ -40,7 +40,6 @@ int main( int argc, char *argv[] )
 			
 			glEnable( GL_BLEND );
 			glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-			glEnable( GL_DEPTH_TEST );
 			
 			/*const char *vsource = "#version 330\n"
 			"layout(location=0) in vec2 PositionIn;"
@@ -78,13 +77,10 @@ int main( int argc, char *argv[] )
 			Texture texture;
 			LoadTexture( "./textures/face_norm.png", &texture );
 			glBindTexture( GL_TEXTURE_2D, texture.id );
-			
-			Font font;
-			LoadFont( "./fonts/Verdana24.png", "./fonts/Verdana24.txt", &font );
 
 			glm::mat4 projectionMatrix = glm::ortho( 0.0f, 640.0f, 480.0f, 0.0f, -1.0f, 1.0f );
 			glUniformMatrix4fv( g_projectionUniformLocation, 1, GL_FALSE, &projectionMatrix[0][0] );
-			WorldMatrix( 0.0f, 0.0f, 0.0f, 0.0f, 0.0f );
+			WorldMatrix( 0.0f, 0.0f, 0.0f, 0.0f );
 			ViewMatrix( 0.0f, 0.0f );
 			Color( 1.0f, 1.0f, 1.0f, 1.0f );
 			UVOffset( 0.0f, 0.0f, 1.0f, 1.0f );
@@ -126,7 +122,7 @@ int main( int argc, char *argv[] )
 				
 				// render
 				glClearColor( 1.0f, 0.0f, 0.0f, 1.0f );
-				glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+				glClear( GL_COLOR_BUFFER_BIT );
 				
 				glBindTexture( GL_TEXTURE_2D, texture.id );
 
@@ -139,12 +135,6 @@ int main( int argc, char *argv[] )
 						canRender = false;
 					}
 				}
-				
-				glBindTexture( GL_TEXTURE_2D, font.texture.id );
-				
-				//RenderText( &font, 32, 32, "X" );
-				RenderText( &font, 32, 32, " !\"#$%&'()*+,-./012\n3456789:;<=>?@AB\nCDEFGHIJKLMNOPQ\nRSTUVWXYZ[\\]^_'ab\ncdefghijklmnopqrstuv\nwxyz{|}~" );
-				//RenderText( &font, 32, 32, "\"" );
 				
 				SDL_GL_SwapWindow( window );
 			}
