@@ -17,7 +17,7 @@ struct Font
 {
 	Texture texture;
 	uint8_t widths[FONT_RANGE];
-	uint8_t xoffsets[FONT_RANGE], yoffsets[FONT_RANGE];
+	uint32_t xoffsets[FONT_RANGE], yoffsets[FONT_RANGE];
 	union
 	{
 		uint8_t dimensions[5];

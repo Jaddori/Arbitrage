@@ -142,6 +142,7 @@ int main( int argc, char *argv[] )
 				
 				glBindTexture( GL_TEXTURE_2D, font.texture.id );
 				
+				//RenderText( &font, 32, 32, "X" );
 				RenderText( &font, 32, 32, " !\"#$%&'()*+,-./012\n3456789:;<=>?@AB\nCDEFGHIJKLMNOPQ\nRSTUVWXYZ[\\]^_'ab\ncdefghijklmnopqrstuv\nwxyz{|}~" );
 				//RenderText( &font, 32, 32, "\"" );
 				
