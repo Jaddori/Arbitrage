@@ -8,7 +8,7 @@
 
 #include "input.h"
 
-static Input g_input = {};
+Input g_input = {};
 
 void SyncInput()
 {
@@ -18,6 +18,10 @@ void SyncInput()
 	g_input.prevMouseX = g_input.mouseX;
 	g_input.prevMouseY = g_input.mouseY;
 	g_input.prevMouseWheel = g_input.mouseWheel;
+	
+	for( int i=0; i<g_input.ntext; i++ )
+		g_input.text[i] = 0;
+	g_input.ntext = 0;
 }
 
 bool GetInput( SDL_Event *e )
@@ -28,6 +32,13 @@ bool GetInput( SDL_Event *e )
 	{
 		case SDL_KEYDOWN:
 			g_input.keys[e->key.keysym.sym] = 1;
+			
+			if( g_input.ntext < INPUT_MAX_TEXT )
+			{
+				int i = e->key.keysym.sym;
+				if( i >= 32 && i < 127 )
+					g_input.text[g_input.ntext++] = (char)i;
+			}
 			break;
 			
 		case SDL_KEYUP:

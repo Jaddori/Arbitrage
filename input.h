@@ -13,6 +13,7 @@
 
 #define INPUT_MAX_KEYS 128
 #define INPUT_MAX_BUTTONS 5
+#define INPUT_MAX_TEXT 10
 
 struct Input
 {
@@ -20,6 +21,8 @@ struct Input
 	uint8_t buttons[INPUT_MAX_BUTTONS], prevButtons[INPUT_MAX_BUTTONS];
 	int mouseX, mouseY, mouseWheel;
 	int prevMouseX, prevMouseY, prevMouseWheel;
+	char text[INPUT_MAX_TEXT];
+	int ntext;
 };
 
 void SyncInput();

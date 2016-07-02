@@ -191,16 +191,33 @@ LUAFUNC(lua_RenderText)
 	return result;
 }
 
+static int lua_GetKey( lua_State* lua, int index )
+{
+	int result = -1;
+	
+	if( lua_isnumber( lua, index ) )
+		result = lua_tonumber( lua, index );
+	else if( lua_isstring( lua, index ) )
+	{
+		const char *str = lua_tostring( lua, index );
+		result = (int)str[0];
+	}
+	
+	return result;
+}
+
 LUAFUNC(lua_KeyDown)
 {
 	int result = 0;
 	
 	if( lua_gettop( lua ) >= 1 )
 	{
-		int key = (int)lua_tonumber( lua, 1 );
-		
-		lua_pushboolean( lua, KeyDown( key ) );
-		result = 1;
+		int key = lua_GetKey( lua, 1 );
+		if( key >= 0 )
+		{
+			lua_pushboolean( lua, KeyDown( key ) );
+			result = 1;
+		}
 	}
 	
 	return result;
@@ -212,10 +229,12 @@ LUAFUNC(lua_KeyUp)
 	
 	if( lua_gettop( lua ) >= 1 )
 	{
-		int key = (int)lua_tonumber( lua, 1 );
-		
-		lua_pushboolean( lua, KeyUp( key ) );
-		result = 1;
+		int key = lua_GetKey( lua, 1 );
+		if( key >= 0 )
+		{
+			lua_pushboolean( lua, KeyUp( key ) );
+			result = 1;
+		}
 	}
 	
 	return result;
@@ -227,10 +246,12 @@ LUAFUNC(lua_KeyPressed)
 	
 	if( lua_gettop( lua ) >= 1 )
 	{
-		int key = (int)lua_tonumber( lua, 1 );
-		
-		lua_pushboolean( lua, KeyPressed( key ) );
-		result = 1;
+		int key = lua_GetKey( lua, 1 );
+		if( key >= 0 )
+		{
+			lua_pushboolean( lua, KeyPressed( key ) );
+			result = 1;
+		}
 	}
 	
 	return result;
@@ -242,10 +263,12 @@ LUAFUNC(lua_KeyReleased)
 	
 	if( lua_gettop( lua ) >= 1 )
 	{
-		int key = (int)lua_tonumber( lua, 1 );
-		
-		lua_pushboolean( lua, KeyReleased( key ) );
-		result = 1;
+		int key = lua_GetKey( lua, 1 );
+		if( key >= 0 )
+		{
+			lua_pushboolean( lua, KeyReleased( key ) );
+			result = 1;
+		}
 	}
 	
 	return result;
@@ -346,6 +369,24 @@ LUAFUNC(lua_MouseDeltaWheel)
 	return result;
 }
 
+LUAFUNC(lua_TextInput)
+{
+	int result = 0;
+	
+	if( g_input.ntext > 0 )
+	{
+		lua_createtable( lua, 0, g_input.ntext );
+		for( int i=0; i<g_input.ntext; i++ )
+		{
+			lua_pushlstring( lua, g_input.text+i, 1 );
+			lua_rawseti( lua, -2, i+1 );
+		}
+		result = 1;
+	}
+	
+	return result;
+}
+
 lua_State* CreateLua()
 {
 	lua_State* result = luaL_newstate();
@@ -377,6 +418,36 @@ lua_State* CreateLua()
 	lua_register( result, "MousePosition", lua_MousePosition );
 	lua_register( result, "MouseDeltaPosition", lua_MouseDeltaPosition );
 	lua_register( result, "MouseDeltaWheel", lua_MouseDeltaWheel );
+	lua_register( result, "TextInput", lua_TextInput );
+	
+	// register keys table
+	lua_createtable( result, 0, 6 );
+	
+	lua_pushstring( result, "Escape" );
+	lua_pushnumber( result, SDLK_ESCAPE );
+	lua_settable( result, -3 );
+	
+	lua_pushstring( result, "Return" );
+	lua_pushnumber( result, SDLK_RETURN );
+	lua_settable( result, -3 );
+	
+	lua_pushstring( result, "Left" );
+	lua_pushnumber( result, SDLK_LEFT );
+	lua_settable( result, -3 );
+	
+	lua_pushstring( result, "Right" );
+	lua_pushnumber( result, SDLK_RIGHT );
+	lua_settable( result, -3 );
+	
+	lua_pushstring( result, "Up" );
+	lua_pushnumber( result, SDLK_UP );
+	lua_settable( result, -3 );
+	
+	lua_pushstring( result, "Down" );
+	lua_pushnumber( result, SDLK_DOWN );
+	lua_settable( result, -3 );
+	
+	lua_setglobal( result, "Keys" );
 
 	return result;
 }

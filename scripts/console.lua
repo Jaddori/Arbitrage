@@ -19,11 +19,9 @@ local ConsoleTextbox =
 	width = 640,
 	height = 24,
 	alpha = Console.alpha,
-	visible = Console.visible
+	visible = Console.visible,
+	input = ""
 }
-
-local timeElapsed = 0.0
-local number = 0
 
 function AddConsoleMessage( message )
 	for i=10,1,-1 do
@@ -34,12 +32,19 @@ function AddConsoleMessage( message )
 end
 
 function UpdateConsole()
-	timeElapsed = timeElapsed + 0.01
+	local text = TextInput()
+	if text then
+		local str = text[1]
+		for i=2,#text do
+			str = str .. text[i]
+		end
 
-	if timeElapsed > 1 then
-		AddConsoleMessage( "Test" .. number )
-		timeElapsed = 0.0
-		number = number + 1
+		ConsoleTextbox.input = ConsoleTextbox.input .. str
+	end
+
+	if KeyReleased( Keys.Return ) then
+		AddConsoleMessage( ConsoleTextbox.input )
+		ConsoleTextbox.input = ""
 	end
 end
 
@@ -62,6 +67,7 @@ function RenderConsole()
 		end
 
 		-- Render input text
-		RenderText( Console.font, ConsoleTextbox.x+1, ConsoleTextbox.y, "Testing..." )
+		--RenderText( Console.font, ConsoleTextbox.x+1, ConsoleTextbox.y, "Testing..." )
+		RenderText( Console.font, ConsoleTextbox.x+1, ConsoleTextbox.y, ConsoleTextbox.input )
 	end
 end

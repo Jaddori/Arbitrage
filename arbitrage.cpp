@@ -21,6 +21,14 @@ int main( int argc, char *argv[] )
 	if( SDL_Init( SDL_INIT_EVERYTHING ) < 0 )
 		return -1;
 	
+	int a = SDLK_a;
+	int b = 'a';
+	
+	a = SDLK_f;
+	b = 'f';
+	
+	a = SDLK_ESCAPE;
+	
 	SDL_GL_SetAttribute( SDL_GL_CONTEXT_MAJOR_VERSION, 3 );
 	SDL_GL_SetAttribute( SDL_GL_CONTEXT_MINOR_VERSION, 2 );
 	SDL_GL_SetAttribute( SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE );

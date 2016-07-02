@@ -7,6 +7,8 @@
 
 #define LUAFUNC(name) int name ( lua_State* lua )
 
+extern Input g_input;
+
 struct ScriptHandle
 {
 	char filename[55];
