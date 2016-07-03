@@ -31,19 +31,34 @@ bool GetInput( SDL_Event *e )
 	switch( e->type )
 	{
 		case SDL_KEYDOWN:
-			g_input.keys[e->key.keysym.sym] = 1;
-			
-			if( g_input.ntext < INPUT_MAX_TEXT )
+			// TODO: Fix index for modifier keys
+			if( e->key.keysym.sym < INPUT_MAX_KEYS )
 			{
-				int i = e->key.keysym.sym;
-				if( i >= 32 && i < 127 )
-					g_input.text[g_input.ntext++] = (char)i;
+				g_input.keys[e->key.keysym.sym] = 1;
+			
+				/*if( g_input.ntext < INPUT_MAX_TEXT )
+				{
+					int i = e->key.keysym.sym;
+					if( i >= 32 && i < 127 )
+						g_input.text[g_input.ntext++] = (char)i;
+				}*/
 			}
 			break;
 			
 		case SDL_KEYUP:
-			g_input.keys[e->key.keysym.sym] = 0;
+			if( e->key.keysym.sym < INPUT_MAX_KEYS )
+				g_input.keys[e->key.keysym.sym] = 0;
 			break;
+			
+		case SDL_TEXTINPUT:
+			{
+				int len = (int)strlen( e->text.text );
+				if( g_input.ntext < INPUT_MAX_TEXT - len )
+				{
+					strcat( g_input.text, e->text.text);
+					g_input.ntext += len;
+				}
+			} break;
 			
 		case SDL_MOUSEMOTION:
 			g_input.mouseX = e->motion.x;
