@@ -6,17 +6,16 @@ import android.os.Bundle;
 
 public class MainActivity extends Activity
 {
-	private GLSurfaceView glView;
+	GameView gameView;
 
 	@Override
 	protected void onCreate( Bundle savedInstanceState )
 	{
 		super.onCreate( savedInstanceState );
 
-		glView = new MainGLSurfaceView( this );
-		setContentView( glView );
+		gameView = new GameView( this );
+		gameView.initialize();
 
-		Shader shader = new Shader();
-		shader.load( this, R.raw.basic_vertex, R.raw.basic_fragment );
+		setContentView( gameView );
 	}
 }
