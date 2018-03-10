@@ -12,17 +12,16 @@ import android.graphics.Rect;
 
 public class UIPanel extends UIBase
 {
-	protected Rect bounds;
 	protected Paint backgroundPaint;
 	protected Paint foregroundPaint;
 	protected boolean rounded;
 	protected Vec2 curves;
 
-	public void setBounds( Rect bounds ) { this.bounds = bounds; }
 	public void setRounded( boolean rounded ) { this.rounded = rounded; }
 	public void setCurves( Vec2 curves ) { this.curves = curves; }
 
-	public Rect getBounds() { return bounds; }
+	public Paint getBackgroundPaint() { return backgroundPaint; }
+	public Paint getForegroundPaint() { return foregroundPaint; }
 	public boolean getRounded() { return rounded; }
 	public Vec2 getCurvers() { return curves; }
 
@@ -41,7 +40,7 @@ public class UIPanel extends UIBase
 	}
 
 	@Override
-	public void initialize( Resources resources )
+	public void initialize()
 	{
 		backgroundPaint = new Paint();
 		backgroundPaint.setColor( Color.BLACK );

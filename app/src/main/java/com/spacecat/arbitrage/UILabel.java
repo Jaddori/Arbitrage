@@ -12,7 +12,6 @@ import android.graphics.Rect;
 
 public class UILabel extends UIBase
 {
-	protected Rect bounds;
 	protected String text;
 	protected Rect textBounds;
 	protected Vec2 textPosition;
@@ -20,6 +19,7 @@ public class UILabel extends UIBase
 	protected Alignment verticalAlignment;
 	protected Paint textPaint;
 
+	@Override
 	public void setBounds( Rect bounds )
 	{
 		this.bounds = bounds;
@@ -44,6 +44,7 @@ public class UILabel extends UIBase
 	public String getText() { return text; }
 	public Alignment getHorizontalAlignment() { return horizontalAlignment; }
 	public Alignment getVerticalAlignment() { return verticalAlignment; }
+	public Paint getTextPaint() { return textPaint; }
 
 	public UILabel()
 	{
@@ -70,11 +71,12 @@ public class UILabel extends UIBase
 	}
 
 	@Override
-	public void initialize( Resources resources )
+	public void initialize()
 	{
 		textPaint = new Paint();
 		textPaint.setColor( Color.WHITE );
 		textPaint.setTextSize( 32.0f );
+		textPaint.setShadowLayer( 1.0f, 8.0f, 8.0f, Color.BLACK );
 
 		calculateTextBounds();
 		calculateTextPosition();

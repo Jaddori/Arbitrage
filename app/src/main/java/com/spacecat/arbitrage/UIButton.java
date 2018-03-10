@@ -24,10 +24,10 @@ public class UIButton extends UIBase
 	}
 
 	@Override
-	public void initialize( Resources resources )
+	public void initialize()
 	{
-		panel.initialize( resources );
-		label.initialize( resources );
+		panel.initialize();
+		label.initialize();
 	}
 
 	@Override
