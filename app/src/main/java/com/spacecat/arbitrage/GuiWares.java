@@ -18,6 +18,7 @@ public class GuiWares
 	private String[] _wares;
 	private int _wareCount;
 	private Rect _bounds;
+	private GuiNavigationBar _navigationBar;
 
 	public GuiWares()
 	{
@@ -47,9 +48,7 @@ public class GuiWares
 
 			Rect buttonRect = Utils.makeRect( 64, _bounds.top + verticalOffset, buttonWidth, buttonHeight );
 			_buttons[i] = new GuiButton( buttonRect );
-			_buttons[i].setBackgroundColor( Color.RED );
-			_buttons[i].setForegroundColor( Color.BLACK );
-			_buttons[i].setPressedColor( Color.GRAY );
+			_buttons[i].setColors( Color.RED, Color.BLACK, Color.GRAY );
 			_buttons[i].setTouchListener( new GuiButton.ITouchListener()
 										  {
 											  @Override
@@ -62,6 +61,9 @@ public class GuiWares
 			verticalOffset += spaceSize + buttonHeight;
 		}
 		_wareCount = 0;
+
+		Rect navBounds = new Rect( _bounds.left, _bounds.top - 128, _bounds.right, _bounds.top );
+		_navigationBar = new GuiNavigationBar( navBounds );
 	}
 
 	public void addWare( String ware )
@@ -94,6 +96,9 @@ public class GuiWares
 			//Rendering.drawText( _wares[i], _bounds.left + 8.0f, _bounds.top + 8.0f + ( i * 64.0f ), 64.0f );
 			_buttons[i].draw();
 		}
+
+		// draw navigation bar
+		_navigationBar.draw();
 	}
 
 	public boolean onTouch( MotionEvent e )

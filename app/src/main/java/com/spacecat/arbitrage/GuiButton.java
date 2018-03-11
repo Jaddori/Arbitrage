@@ -24,6 +24,7 @@ public class GuiButton
 	private Vec2 _padding;
 	private ITouchListener _touchListener;
 	private boolean _pressed;
+	private boolean _drawBackground;
 
 	public void setBounds( Rect bounds ) { _bounds = new Rect( bounds ); }
 	public void setText( String text ) { _text = new String( text ); }
@@ -36,6 +37,14 @@ public class GuiButton
 	public void setTouchListener( ITouchListener listener )
 	{
 		_touchListener = listener;
+	}
+	public void setDrawBackground( boolean value ) { _drawBackground = value; }
+
+	public void setColors( int bg, int fg, int pressed )
+	{
+		_backgroundColor = bg;
+		_foregroundColor = fg;
+		_pressedColor = pressed;
 	}
 
 	public GuiButton()
@@ -67,16 +76,20 @@ public class GuiButton
 		_rounded = true;
 		_curves = new Vec2( 12.0f, 12.0f );
 		_padding = new Vec2( 12.0f, 12.0f );
+		_drawBackground = true;
 	}
 
 	public void draw()
 	{
-		int finalBackgroundColor = ( _pressed ? _pressedColor : _backgroundColor );
+		if( _drawBackground )
+		{
+			int finalBackgroundColor = ( _pressed ? _pressedColor : _backgroundColor );
 
-		if( _rounded )
-			Rendering.drawRoundedRect( _bounds, _curves, finalBackgroundColor, _foregroundColor );
-		else
-			Rendering.drawRect( _bounds, finalBackgroundColor, _foregroundColor );
+			if( _rounded )
+				Rendering.drawRoundedRect( _bounds, _curves, finalBackgroundColor, _foregroundColor );
+			else
+				Rendering.drawRect( _bounds, finalBackgroundColor, _foregroundColor );
+		}
 
 		Rendering.drawText( _text, _bounds.left + _padding.x, _bounds.top + _padding.y, 64.0f );
 	}
