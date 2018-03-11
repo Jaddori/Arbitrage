@@ -22,6 +22,7 @@ public class GameView extends View implements View.OnTouchListener
 	ArrayList<City> cities;
 	GuiWares guiWares;
 	boolean disabledAntiAlias;
+	City _selectedCity;
 
 	public GameView( Context context )
 	{
@@ -39,20 +40,22 @@ public class GameView extends View implements View.OnTouchListener
 		city.setPosition( new Vec2( 32, 32 ) );
 		city.setSize( new Vec2( 256, 256 ) );
 		city.setName( "Bojangles" );
+		city.addWare( "Apples" );
+		city.addWare( "Bananas" );
 
 		City otherCity = new City();
 		otherCity.setPosition( new Vec2( 64, 512 ) );
 		otherCity.setSize( new Vec2( 512, 128 ) );
 		otherCity.setName( "Bluebear" );
+		otherCity.addWare( "Pineapples" );
+		otherCity.addWare( "Pears" );
+		otherCity.addWare( "Melons" );
 
 		cities.add( city );
 		cities.add( otherCity );
 
 		// Gui Wares
 		guiWares = new GuiWares();
-		guiWares.addWare( "Apples" );
-		guiWares.addWare( "Bananas" );
-		guiWares.addWare( "Pears" );
 
 		setOnTouchListener( this );
 
@@ -85,10 +88,26 @@ public class GameView extends View implements View.OnTouchListener
 	@Override
 	public boolean onTouch( View view, MotionEvent e )
 	{
+		_selectedCity = null;
 		for( City city : cities )
 		{
-			city.onTouch( e );
+			if( city.onTouch( e ) )
+				_selectedCity = city;
 		}
+
+		if( _selectedCity != null )
+		{
+			guiWares.resetWares();
+
+			for( String ware : _selectedCity.getWares() )
+			{
+				guiWares.addWare( ware );
+			}
+
+			guiWares.setVisible( true );
+		}
+		else
+			guiWares.setVisible( false );
 
 		guiWares.onTouch( e );
 

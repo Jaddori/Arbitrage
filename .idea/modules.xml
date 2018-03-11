@@ -3,9 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Arbitrage.iml" filepath="$PROJECT_DIR$/Arbitrage.iml" />
-      <module fileurl="file://D:\dev\Git\Arbitrage\Arbitrage.iml" filepath="D:\dev\Git\Arbitrage\Arbitrage.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://D:\dev\Git\Arbitrage\app\app.iml" filepath="D:\dev\Git\Arbitrage\app\app.iml" />
     </modules>
   </component>
 </project>

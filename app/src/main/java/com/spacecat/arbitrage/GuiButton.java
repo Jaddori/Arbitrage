@@ -15,25 +15,30 @@ public class GuiButton
 	}
 
 	private Rect _bounds;
-	private String _text;
 	private int _backgroundColor;
 	private int _foregroundColor;
 	private int _pressedColor;
 	private boolean _rounded;
 	private Vec2 _curves;
-	private Vec2 _padding;
 	private ITouchListener _touchListener;
 	private boolean _pressed;
 	private boolean _drawBackground;
+	private GuiAlignedText _text;
 
-	public void setBounds( Rect bounds ) { _bounds = new Rect( bounds ); }
-	public void setText( String text ) { _text = new String( text ); }
+	public void setBounds( Rect bounds )
+	{
+		_bounds = new Rect( bounds );
+		_text.setBounds( bounds );
+	}
+	public void setText( String text )
+	{
+		_text.setText( text );
+	}
 	public void setBackgroundColor( int color ) { _backgroundColor = color; }
 	public void setForegroundColor( int color ) { _foregroundColor = color; }
 	public void setPressedColor( int color ) { _pressedColor = color; }
 	public void setRounded( boolean rounded ) { _rounded = rounded; }
 	public void setCurves( Vec2 curves ) { _curves = new Vec2( curves ); }
-	public void setPadding( Vec2 padding ) { _padding = new Vec2( padding ); }
 	public void setTouchListener( ITouchListener listener )
 	{
 		_touchListener = listener;
@@ -47,6 +52,11 @@ public class GuiButton
 		_pressedColor = pressed;
 	}
 
+	public GuiAlignedText getText()
+	{
+		return _text;
+	}
+
 	public GuiButton()
 	{
 		initialize();
@@ -55,28 +65,29 @@ public class GuiButton
 	public GuiButton( Rect bounds )
 	{
 		initialize();
-		_bounds = bounds;
+		setBounds( bounds );
 	}
 
 	public GuiButton( Rect bounds, String text )
 	{
 		initialize();
-		_bounds = bounds;
-		_text = text;
+		setBounds( bounds );
+		setText( text );
 	}
 
 	protected void initialize()
 	{
 		_bounds = new Rect();
-		_text = "";
 		_backgroundColor = Color.GRAY;
 		_foregroundColor = Color.WHITE;
 		_pressedColor = Color.BLACK;
 		_pressed = false;
 		_rounded = true;
 		_curves = new Vec2( 12.0f, 12.0f );
-		_padding = new Vec2( 12.0f, 12.0f );
 		_drawBackground = true;
+
+		_text = new GuiAlignedText();
+		_text.setTextPadding( new Vec2( 8.0f, 8.0f ) );
 	}
 
 	public void draw()
@@ -91,7 +102,7 @@ public class GuiButton
 				Rendering.drawRect( _bounds, finalBackgroundColor, _foregroundColor );
 		}
 
-		Rendering.drawText( _text, _bounds.left + _padding.x, _bounds.top + _padding.y, 64.0f );
+		_text.draw();
 	}
 
 	public boolean onTouch( MotionEvent e )

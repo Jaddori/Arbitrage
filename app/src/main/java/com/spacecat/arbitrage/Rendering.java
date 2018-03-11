@@ -15,6 +15,8 @@ public class Rendering
 
 	public static void setCanvas( Canvas canvas ) { _canvas = canvas; }
 
+	public static Canvas getCanvas() { return _canvas; }
+
 	public static void initialize()
 	{
 		_backgroundPaint = new Paint();
@@ -24,11 +26,13 @@ public class Rendering
 		_foregroundPaint.setColor( Color.WHITE );
 		_foregroundPaint.setStyle( Paint.Style.STROKE );
 		_foregroundPaint.setStrokeWidth( 4.0f );
+		_foregroundPaint.setAntiAlias( false );
 
 		_textPaint = new Paint();
 		_textPaint.setColor( Color.WHITE );
 		_textPaint.setShadowLayer( 1.0f, 4.0f, 4.0f, Color.BLACK );
 		_textPaint.setTextSize( 32.0f );
+		_textPaint.setAntiAlias( false );
 	}
 
 	public static void drawText( String text, Vec2 position, float size )

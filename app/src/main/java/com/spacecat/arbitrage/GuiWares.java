@@ -19,6 +19,11 @@ public class GuiWares
 	private int _wareCount;
 	private Rect _bounds;
 	private GuiNavigationBar _navigationBar;
+	private boolean _visible;
+
+	public void setVisible( boolean visible ) { _visible = visible; }
+
+	public boolean getVisible() { return _visible; }
 
 	public GuiWares()
 	{
@@ -64,6 +69,22 @@ public class GuiWares
 
 		Rect navBounds = new Rect( _bounds.left, _bounds.top - 128, _bounds.right, _bounds.top );
 		_navigationBar = new GuiNavigationBar( navBounds );
+		_navigationBar.setHasBackButton( false );
+
+		GuiButton.ITouchListener firstListener = new GuiButton.ITouchListener()
+		{
+			@Override
+			public void onTouch( MotionEvent e )
+			{
+				_navigationBar.addStage( "Fourth", null );
+			}
+		};
+
+		_navigationBar.addStage( "First", firstListener );
+		_navigationBar.addStage( "Second", null );
+		_navigationBar.addStage( "Third", null );
+
+		_visible = false;
 	}
 
 	public void addWare( String ware )
@@ -85,25 +106,35 @@ public class GuiWares
 		}
 	}
 
+	public void resetWares()
+	{
+		_wareCount = 0;
+	}
+
 	public void draw( Canvas canvas )
 	{
-		// draw background
-		Rendering.drawRect( _bounds, Color.YELLOW, Color.BLACK );
-
-		// draw wares
-		for( int i=0; i<_wareCount; i++ )
+		if( _visible )
 		{
-			//Rendering.drawText( _wares[i], _bounds.left + 8.0f, _bounds.top + 8.0f + ( i * 64.0f ), 64.0f );
-			_buttons[i].draw();
-		}
+			// draw background
+			Rendering.drawRect( _bounds, Color.YELLOW, Color.BLACK );
 
-		// draw navigation bar
-		_navigationBar.draw();
+			// draw wares
+			for( int i = 0; i < _wareCount; i++ )
+			{
+				//Rendering.drawText( _wares[i], _bounds.left + 8.0f, _bounds.top + 8.0f + ( i * 64.0f ), 64.0f );
+				_buttons[i].draw();
+			}
+
+			// draw navigation bar
+			_navigationBar.draw();
+		}
 	}
 
 	public boolean onTouch( MotionEvent e )
 	{
 		boolean result = false;
+
+		result = _navigationBar.onTouch( e );
 
 		for( GuiButton button : _buttons )
 			result = button.onTouch( e );

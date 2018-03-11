@@ -8,6 +8,8 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.view.MotionEvent;
 
+import java.util.ArrayList;
+
 /**
  * Created by Nix on 2018-03-10.
  */
@@ -18,6 +20,8 @@ public class City
 	private Vec2 _position;
 	private Vec2 _size;
 	private Paint _paint;
+
+	private ArrayList<String> _wares;
 
 	public void setName( String name ) { _name = name; }
 	public void setPosition( Vec2 position )
@@ -30,6 +34,7 @@ public class City
 	public Vec2 getPosition() { return _position; }
 	public Vec2 getSize() { return _size; }
 	public Paint getPaint() { return _paint; }
+	public ArrayList<String> getWares() { return _wares; }
 
 	public City()
 	{
@@ -41,8 +46,9 @@ public class City
 		_name = "";
 		_position = new Vec2();
 		_size = new Vec2();
-		_paint = new Paint();
+		_wares = new ArrayList<>();
 
+		_paint = new Paint();
 		_paint.setColor( Color.RED );
 	}
 
@@ -70,5 +76,10 @@ public class City
 		}
 
 		return result;
+	}
+
+	public void addWare( String ware )
+	{
+		_wares.add( ware );
 	}
 }
