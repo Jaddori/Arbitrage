@@ -14,65 +14,59 @@ import android.view.MotionEvent;
 
 public class City
 {
-	private String name;
-	private Vec2 position;
-	private Vec2 size;
-	private Paint paint;
-	private UILabel nameLabel;
+	private String _name;
+	private Vec2 _position;
+	private Vec2 _size;
+	private Paint _paint;
 
-	public void setName( String name ) { this.name = name; nameLabel.setText( name ); }
+	public void setName( String name ) { _name = name; }
 	public void setPosition( Vec2 position )
 	{
-		this.position = position;
-		nameLabel.setBounds( new Rect( (int)position.x, (int)position.y, (int)position.x, (int)position.y ) );
+		_position = position;
 	}
-	public void setSize( Vec2 size ) { this.size = size; }
+	public void setSize( Vec2 size ) { _size = size; }
 
-	public String getName() { return name; }
-	public Vec2 getPosition() { return position; }
-	public Vec2 getSize() { return size; }
-	public Paint getPaint() { return paint; }
+	public String getName() { return _name; }
+	public Vec2 getPosition() { return _position; }
+	public Vec2 getSize() { return _size; }
+	public Paint getPaint() { return _paint; }
 
 	public City()
 	{
-		name = "";
-		position = new Vec2();
-		size = new Vec2();
-		paint = new Paint();
-
-		nameLabel = new UILabel( new Rect() );
+		initialize();
 	}
 
-	public void initialize()
+	private void initialize()
 	{
-		paint.setColor( Color.RED );
+		_name = "";
+		_position = new Vec2();
+		_size = new Vec2();
+		_paint = new Paint();
 
-		nameLabel.initialize();
-		nameLabel.getTextPaint().setTextSize( 64.0f );
+		_paint.setColor( Color.RED );
 	}
 
 	public void draw( Canvas canvas )
 	{
-		canvas.drawRect( new RectF( position.x, position.y, position.x+size.x, position.y+size.y ), paint );
-
-		nameLabel.draw( canvas );
+		canvas.drawRect( new RectF( _position.x, _position.y, _position.x+_size.x, _position.y+_size.y ), _paint );
+		Rendering.drawText( _name, _position, 32.0f );
 	}
 
 	public boolean onTouch( MotionEvent e )
 	{
-		boolean result = Utils.insideRect( position, size, e.getX(), e.getY() );;
+		boolean result = Utils.insideRect( _position, _size, e.getX(), e.getY() );
 
 		if( e.getActionMasked() == MotionEvent.ACTION_DOWN )
 		{
 			if( result )
-				paint.setColor( Color.YELLOW );
+				_paint.setColor( Color.YELLOW );
 		}
 		else if( e.getActionMasked() == MotionEvent.ACTION_UP )
 		{
 			if( result )
-				paint.setColor( Color.GREEN );
+				_paint.setColor( Color.GREEN );
 			else
-				paint.setColor( Color.RED );
+				_paint.setColor( Color.RED );
 		}
 
 		return result;

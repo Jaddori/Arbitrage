@@ -8,6 +8,8 @@ import android.graphics.Rect;
 
 public class Utils
 {
+	public static Point windowSize;
+
 	public static boolean insideRect( Rect rect, Point point )
 	{
 		return ( point.x >= rect.left && point.x <= rect.right && point.y >= rect.top && point.y <= rect.bottom );
@@ -39,5 +41,10 @@ public class Utils
 	{
 		return ( x >= position.x && x <= position.x+size.x &&
 				y >= position.y && y <= position.y+size.y );
+	}
+
+	public static Rect makeRect( int x, int y, int width, int height )
+	{
+		return new Rect( x, y, x+width, y+height );
 	}
 }
