@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.view.MotionEvent;
+import android.widget.Toast;
 
 /**
  * Created by Tunder on 2018-03-10.
@@ -20,8 +21,22 @@ public class GuiWares
 	private Rect _bounds;
 	private GuiNavigationBar _navigationBar;
 	private boolean _visible;
+	private City _selectedCity;
 
 	public void setVisible( boolean visible ) { _visible = visible; }
+	public void setSelectedCity( City city )
+	{
+		_selectedCity = city;
+
+		_wareCount = _selectedCity.getWares().size();
+
+		// NOTE: Make sure _wareCount < MAX_WARES
+
+		for( int i=0; i<_wareCount; i++ )
+		{
+			_buttons[i].setText( _selectedCity.getWares().get( i ).getName() );
+		}
+	}
 
 	public boolean getVisible() { return _visible; }
 
@@ -59,7 +74,7 @@ public class GuiWares
 											  @Override
 											  public void onTouch( MotionEvent e )
 											  {
-												  setWare( 2, "CLICKED" );
+												  //setWare( 2, "CLICKED" );
 											  }
 										  } );
 
@@ -87,7 +102,7 @@ public class GuiWares
 		_visible = false;
 	}
 
-	public void addWare( String ware )
+	/*public void addWare( String ware )
 	{
 		if( _wareCount < MAX_WARES )
 		{
@@ -109,7 +124,7 @@ public class GuiWares
 	public void resetWares()
 	{
 		_wareCount = 0;
-	}
+	}*/
 
 	public void draw( Canvas canvas )
 	{

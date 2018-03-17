@@ -40,16 +40,16 @@ public class GameView extends View implements View.OnTouchListener
 		city.setPosition( new Vec2( 32, 32 ) );
 		city.setSize( new Vec2( 256, 256 ) );
 		city.setName( "Bojangles" );
-		city.addWare( "Apples" );
-		city.addWare( "Bananas" );
+		city.addWare( new Ware( "Apples", 5 ) );
+		city.addWare( new Ware( "Bananas", 10 ) );
 
 		City otherCity = new City();
 		otherCity.setPosition( new Vec2( 64, 512 ) );
 		otherCity.setSize( new Vec2( 512, 128 ) );
 		otherCity.setName( "Bluebear" );
-		otherCity.addWare( "Pineapples" );
-		otherCity.addWare( "Pears" );
-		otherCity.addWare( "Melons" );
+		otherCity.addWare( new Ware( "Pineapples", 5 ) );
+		otherCity.addWare( new Ware( "Pears", 10 ) );
+		otherCity.addWare( new Ware("Melons", 15 ) );
 
 		cities.add( city );
 		cities.add( otherCity );
@@ -97,17 +97,16 @@ public class GameView extends View implements View.OnTouchListener
 
 		if( _selectedCity != null )
 		{
-			guiWares.resetWares();
+			//guiWares.resetWares();
 
-			for( String ware : _selectedCity.getWares() )
+			/*for( String ware : _selectedCity.getWares() )
 			{
 				guiWares.addWare( ware );
-			}
+			}*/
 
+			guiWares.setSelectedCity( _selectedCity );
 			guiWares.setVisible( true );
 		}
-		else
-			guiWares.setVisible( false );
 
 		guiWares.onTouch( e );
 

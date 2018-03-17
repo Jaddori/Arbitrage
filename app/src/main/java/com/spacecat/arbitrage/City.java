@@ -21,7 +21,7 @@ public class City
 	private Vec2 _size;
 	private Paint _paint;
 
-	private ArrayList<String> _wares;
+	private ArrayList<Ware> _wares;
 
 	public void setName( String name ) { _name = name; }
 	public void setPosition( Vec2 position )
@@ -34,7 +34,7 @@ public class City
 	public Vec2 getPosition() { return _position; }
 	public Vec2 getSize() { return _size; }
 	public Paint getPaint() { return _paint; }
-	public ArrayList<String> getWares() { return _wares; }
+	public ArrayList<Ware> getWares() { return _wares; }
 
 	public City()
 	{
@@ -78,8 +78,8 @@ public class City
 		return result;
 	}
 
-	public void addWare( String ware )
+	public void addWare( Ware ware )
 	{
-		_wares.add( ware );
+		_wares.add( new Ware( ware ) );
 	}
 }
