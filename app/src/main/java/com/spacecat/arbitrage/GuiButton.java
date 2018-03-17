@@ -7,55 +7,29 @@ import android.view.MotionEvent;
  * Created by Tunder on 2018-03-10.
  */
 
-public class GuiButton
+public class GuiButton extends GuiElement
 {
-	public interface ITouchListener
-	{
-		void onTouch( MotionEvent e );
-	}
+	//private GuiAlignedText _text;
+	private GuiLabel _label;
 
-	private Rect _bounds;
-	private int _backgroundColor;
-	private int _foregroundColor;
-	private int _pressedColor;
-	private boolean _rounded;
-	private Vec2 _curves;
-	private ITouchListener _touchListener;
-	private boolean _pressed;
-	private boolean _drawBackground;
-	private GuiAlignedText _text;
-
-	public void setBounds( Rect bounds )
-	{
-		_bounds = new Rect( bounds );
-		_text.setBounds( bounds );
-	}
-	public void setText( String text )
+	/*public void setText( String text )
 	{
 		_text.setText( text );
-	}
-	public void setBackgroundColor( int color ) { _backgroundColor = color; }
-	public void setForegroundColor( int color ) { _foregroundColor = color; }
-	public void setPressedColor( int color ) { _pressedColor = color; }
-	public void setRounded( boolean rounded ) { _rounded = rounded; }
-	public void setCurves( Vec2 curves ) { _curves = new Vec2( curves ); }
-	public void setTouchListener( ITouchListener listener )
-	{
-		_touchListener = listener;
-	}
-	public void setDrawBackground( boolean value ) { _drawBackground = value; }
+	}*/
 
-	public void setColors( int bg, int fg, int pressed )
+	@Override
+	public void setBounds( Rect bounds )
 	{
-		_backgroundColor = bg;
-		_foregroundColor = fg;
-		_pressedColor = pressed;
+		super.setBounds( bounds );
+		_label.setBounds( bounds );
 	}
 
-	public GuiAlignedText getText()
+	public void setText( String text )
 	{
-		return _text;
+		_label.setText( text );
 	}
+
+	public GuiLabel getLabel() { return _label; }
 
 	public GuiButton()
 	{
@@ -64,62 +38,28 @@ public class GuiButton
 
 	public GuiButton( Rect bounds )
 	{
-		initialize();
+		super( bounds );
 		setBounds( bounds );
 	}
 
 	public GuiButton( Rect bounds, String text )
 	{
-		initialize();
+		super( bounds );
 		setBounds( bounds );
 		setText( text );
 	}
 
+	@Override
 	protected void initialize()
 	{
-		_bounds = new Rect();
-		_backgroundColor = Color.GRAY;
-		_foregroundColor = Color.WHITE;
-		_pressedColor = Color.BLACK;
-		_pressed = false;
+		super.initialize();
+
 		_rounded = true;
 		_curves = new Vec2( 12.0f, 12.0f );
-		_drawBackground = true;
 
-		_text = new GuiAlignedText();
-		_text.setTextPadding( new Vec2( 8.0f, 8.0f ) );
-	}
+		_label = new GuiLabel();
+		_label.getText().setTextPadding( new Vec2( 8.0f, 8.0f ) );
 
-	public void draw()
-	{
-		if( _drawBackground )
-		{
-			int finalBackgroundColor = ( _pressed ? _pressedColor : _backgroundColor );
-
-			if( _rounded )
-				Rendering.drawRoundedRect( _bounds, _curves, finalBackgroundColor, _foregroundColor );
-			else
-				Rendering.drawRect( _bounds, finalBackgroundColor, _foregroundColor );
-		}
-
-		_text.draw();
-	}
-
-	public boolean onTouch( MotionEvent e )
-	{
-		if( e.getActionMasked() == MotionEvent.ACTION_DOWN )
-			_pressed = Utils.insideRect( _bounds, e.getX(), e.getY() );
-		else
-		{
-			if( _pressed )
-			{
-				if( _touchListener != null )
-					_touchListener.onTouch( e );
-			}
-
-			_pressed = false;
-		}
-
-		return _pressed;
+		_children.add( _label );
 	}
 }

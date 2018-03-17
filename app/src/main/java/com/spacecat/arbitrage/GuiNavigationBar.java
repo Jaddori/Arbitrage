@@ -9,53 +9,45 @@ import java.util.ArrayList;
  * Created by Nix on 2018-03-11.
  */
 
-public class GuiNavigationBar
+public class GuiNavigationBar extends GuiElement
 {
-	private Rect _bounds;
-	private int _backgroundColor;
-	private int _foregroundColor;
+	private final int STAGE_PADDING = 16;
+
 	private GuiButton _backButton;
 	private boolean _hasBackButton;
 	private ArrayList<GuiButton> _stages;
 	private ArrayList<GuiAlignedText> _stagePaddings;
 	private int _stageOffset;
-	private int _stagePadding;
 
-	public void setBounds( Rect bounds ) { _bounds = new Rect( bounds ); }
-	public void setBackgroundColor( int color ) { _backgroundColor = color; }
-	public void setForegroundColor( int color ) { _foregroundColor = color; }
 	public void setHasBackButton( boolean backButton ) { _hasBackButton = backButton; }
 
-	public Rect getBounds() { return _bounds; }
-	public int getBackgroundColor() { return _backgroundColor; }
-	public int getForegroundColor() { return _foregroundColor; }
 	public boolean getHasBackButton() { return _hasBackButton; }
 
 	public GuiNavigationBar( Rect bounds )
 	{
-		_bounds = new Rect( bounds );
-		initialize();
+		super( bounds );
 	}
 
+	@Override
 	protected void initialize()
 	{
+		super.initialize();
+
 		Rect buttonBounds = Utils.makeRect( _bounds.left, _bounds.top, 256, _bounds.height() );
 		_backButton = new GuiButton( buttonBounds, "< Back" );
 		_backButton.setColors( 0, 0, Color.LTGRAY );
 
 		_backgroundColor = Color.argb( 255, 35, 128, 128 );
-		_foregroundColor = Color.BLACK;
 
 		_stages = new ArrayList<>();
 		_stagePaddings = new ArrayList<>();
-		_stageOffset = 0;
-		_stagePadding = 16;
+		_stageOffset = STAGE_PADDING;
 	}
 
-	public void draw()
+	@Override
+	protected void drawChildren()
 	{
-		// draw background
-		Rendering.drawRect( _bounds, _backgroundColor, _foregroundColor );
+		super.drawChildren();
 
 		if( _hasBackButton )
 		{
@@ -76,12 +68,16 @@ public class GuiNavigationBar
 		}
 	}
 
+	@Override
 	public boolean onTouch( MotionEvent e )
 	{
 		boolean result = false;
 
 		for( int i=0; i<_stages.size() && !result; i++ )
 			result = _stages.get( i ).onTouch( e );
+
+		if( Utils.insideRect( _bounds, e.getX(), e.getY() ) )
+			result = true;
 
 		return result;
 	}
@@ -103,7 +99,7 @@ public class GuiNavigationBar
 			padding.setBounds( paddingBounds );
 
 			_stagePaddings.add( padding );
-			_stageOffset += paddingBounds.width() + _stagePadding;
+			_stageOffset += paddingBounds.width() + STAGE_PADDING;
 		}
 
 		// add stage
@@ -117,12 +113,12 @@ public class GuiNavigationBar
 		stage.setTouchListener( delegate );
 		stage.setColors( 0, 0, Color.GRAY );
 
-		stage.getText().calculateTextBounds();
-		bounds.right += stage.getText().getTextWidth() + stage.getText().getTextPadding().x*2;
+		stage.getLabel().getText().calculateTextBounds();
+		bounds.right += stage.getLabel().getText().getTextWidth() + stage.getLabel().getText().getTextPadding().x*2;
 
 		stage.setBounds( bounds );
 		_stages.add( stage );
 
-		_stageOffset += bounds.width() + _stagePadding;
+		_stageOffset += bounds.width() + STAGE_PADDING;
 	}
 }

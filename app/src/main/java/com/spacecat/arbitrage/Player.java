@@ -74,4 +74,15 @@ public class Player
 
 		return result;
 	}
+
+	public Ware getWare( String name )
+	{
+		Ware result = null;
+
+		for( int i=0; i<_wares.size() && result == null; i++ )
+			if( _wares.get( i ).getName().equals( name ) )
+				result = _wares.get( i );
+
+		return result;
+	}
 }

@@ -19,10 +19,11 @@ import java.util.ArrayList;
 
 public class GameView extends View implements View.OnTouchListener
 {
-	ArrayList<City> cities;
-	GuiWares guiWares;
-	boolean disabledAntiAlias;
+	ArrayList<City> _cities;
 	City _selectedCity;
+	boolean _disabledAntiAlias;
+	Player _player;
+	GuiTrade _guiTrade;
 
 	public GameView( Context context )
 	{
@@ -34,7 +35,7 @@ public class GameView extends View implements View.OnTouchListener
 		Rendering.initialize();
 
 		// Cities
-		cities = new ArrayList<>();
+		_cities = new ArrayList<>();
 
 		City city = new City();
 		city.setPosition( new Vec2( 32, 32 ) );
@@ -51,21 +52,27 @@ public class GameView extends View implements View.OnTouchListener
 		otherCity.addWare( new Ware( "Pears", 10 ) );
 		otherCity.addWare( new Ware("Melons", 15 ) );
 
-		cities.add( city );
-		cities.add( otherCity );
-
-		// Gui Wares
-		guiWares = new GuiWares();
+		_cities.add( city );
+		_cities.add( otherCity );
 
 		setOnTouchListener( this );
 
-		disabledAntiAlias = false;
+		_disabledAntiAlias = false;
+
+		_player = new Player( "Bojangles" );
+		_player.getMoney().add( new Money( 10 ) );
+		_player.getWares().add( new Ware( "Apples", 7 ) );
+
+		_guiTrade = new GuiTrade();
+		_guiTrade.setPlayer( _player );
+		_guiTrade.setCity( city );
+		_guiTrade.setWare( new Ware( "Apples" ) );
 	}
 
 	@Override
 	protected void onDraw( Canvas canvas )
 	{
-		if( !disabledAntiAlias )
+		if( !_disabledAntiAlias )
 		{
 			final DrawFilter filter = new PaintFlagsDrawFilter( Paint.ANTI_ALIAS_FLAG, 0);
 			canvas.setDrawFilter( filter );
@@ -77,38 +84,36 @@ public class GameView extends View implements View.OnTouchListener
 
 		canvas.drawColor( Color.BLUE );
 
-		for( City city : cities )
+		for( City city : _cities )
 		{
 			city.draw( canvas );
 		}
 
-		guiWares.draw( canvas );
+		_guiTrade.draw();
 	}
 
 	@Override
 	public boolean onTouch( View view, MotionEvent e )
 	{
-		_selectedCity = null;
-		for( City city : cities )
+		if( _guiTrade.onTouch( e ) )
 		{
-			if( city.onTouch( e ) )
-				_selectedCity = city;
 		}
-
-		if( _selectedCity != null )
+		else
 		{
-			//guiWares.resetWares();
-
-			/*for( String ware : _selectedCity.getWares() )
+			_selectedCity = null;
+			for( City city : _cities )
 			{
-				guiWares.addWare( ware );
-			}*/
+				if( city.onTouch( e ) )
+					_selectedCity = city;
+			}
 
-			guiWares.setSelectedCity( _selectedCity );
-			guiWares.setVisible( true );
+			if( _selectedCity != null )
+			{
+				_guiTrade.setCity( _selectedCity );
+			}
+			//else
+			//	_guiTrade.setVisible( false );
 		}
-
-		guiWares.onTouch( e );
 
 		invalidate();
 
