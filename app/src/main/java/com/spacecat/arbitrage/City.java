@@ -93,4 +93,18 @@ public class City
 
 		return result;
 	}
+
+	public Money calculatePrice( String wareName, int amount )
+	{
+		Money result = new Money();
+
+		Ware ware = getWare( wareName );
+		if( ware != null )
+		{
+			int silver = amount * ( ware.getDemand() / ware.getSupply() ) * 100;
+			result.setSilver( silver );
+		}
+
+		return result;
+	}
 }

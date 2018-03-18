@@ -63,9 +63,9 @@ public class Player
 
 		if( myWare != null )
 		{
-			if( myWare.getQuantity() > ware.getQuantity() )
+			if( myWare.getSupply() > ware.getSupply() )
 			{
-				myWare.decrementQuantity( ware.getQuantity() );
+				myWare.decrementSupply( ware.getSupply() );
 				_money.add( price );
 
 				result = true;
@@ -82,6 +82,20 @@ public class Player
 		for( int i=0; i<_wares.size() && result == null; i++ )
 			if( _wares.get( i ).getName().equals( name ) )
 				result = _wares.get( i );
+
+		return result;
+	}
+
+	public Money calculatePrice( String wareName, int amount )
+	{
+		Money result = new Money();
+
+		Ware ware = getWare( wareName );
+		if( ware != null )
+		{
+			int silver = amount * ( ware.getDemand() / ware.getSupply() ) * 100;
+			result.setSilver( silver );
+		}
 
 		return result;
 	}

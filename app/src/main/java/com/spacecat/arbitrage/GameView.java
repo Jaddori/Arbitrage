@@ -41,16 +41,16 @@ public class GameView extends View implements View.OnTouchListener
 		city.setPosition( new Vec2( 32, 32 ) );
 		city.setSize( new Vec2( 256, 256 ) );
 		city.setName( "Bojangles" );
-		city.addWare( new Ware( "Apples", 5 ) );
-		city.addWare( new Ware( "Bananas", 10 ) );
+		city.addWare( new Ware( "Apples", 5, 10 ) );
+		city.addWare( new Ware( "Bananas", 10, 10 ) );
 
 		City otherCity = new City();
 		otherCity.setPosition( new Vec2( 64, 512 ) );
 		otherCity.setSize( new Vec2( 512, 128 ) );
 		otherCity.setName( "Bluebear" );
-		otherCity.addWare( new Ware( "Pineapples", 5 ) );
-		otherCity.addWare( new Ware( "Pears", 10 ) );
-		otherCity.addWare( new Ware("Melons", 15 ) );
+		otherCity.addWare( new Ware( "Pineapples", 5, 10 ) );
+		otherCity.addWare( new Ware( "Pears", 10, 10 ) );
+		otherCity.addWare( new Ware("Melons", 15, 10 ) );
 
 		_cities.add( city );
 		_cities.add( otherCity );
@@ -61,8 +61,8 @@ public class GameView extends View implements View.OnTouchListener
 
 		_player = new Player( "Bojangles" );
 		_player.getMoney().add( new Money( 10 ) );
-		_player.getWares().add( new Ware( "Apples", 7 ) );
-		_player.getWares().add( new Ware( "Bananas", 15 ) );
+		_player.getWares().add( new Ware( "Apples", 7, 0 ) );
+		_player.getWares().add( new Ware( "Bananas", 15, 0 ) );
 
 		_guiTrade = new GuiTrade();
 		_guiTrade.setPlayer( _player );

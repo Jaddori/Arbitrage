@@ -7,13 +7,16 @@ package com.spacecat.arbitrage;
 public class Ware
 {
 	private String _name;
-	private int _quantity;
+	private int _supply;
+	private int _demand;
 
 	public void setName( String name ) { _name = new String( name ); }
-	public void setQuantity( int quantity ) { _quantity = quantity; }
+	public void setSupply( int supply ) { _supply = supply; }
+	public void setDemand( int demand ) { _demand = demand; }
 
 	public String getName() { return _name; }
-	public int getQuantity() { return _quantity; }
+	public int getSupply() { return _supply; }
+	public int getDemand() { return _demand; }
 
 	public Ware()
 	{
@@ -22,27 +25,39 @@ public class Ware
 	public Ware( Ware ref )
 	{
 		_name = ref._name;
-		_quantity = ref._quantity;
+		_supply = ref._supply;
+		_demand = ref._demand;
 	}
 
 	public Ware( String name )
 	{
-		this( name, 0 );
+		this( name, 0, 0 );
 	}
 
-	public Ware( String name, int quantity )
+	public Ware( String name, int supply, int demand )
 	{
 		_name = new String( name );
-		_quantity = quantity;
+		_supply = supply;
+		_demand = demand;
 	}
 
-	public void incrementQuantity( int amount )
+	public void incrementSupply( int amount )
 	{
-		_quantity += amount;
+		_supply += amount;
 	}
 
-	public void decrementQuantity( int amount )
+	public void decrementSupply( int amount )
 	{
-		_quantity -= amount;
+		_supply -= amount;
+	}
+
+	public void incrementDemand( int amount )
+	{
+		_demand += amount;
+	}
+
+	public void decrementDemand( int amount )
+	{
+		_demand -= amount;
 	}
 }

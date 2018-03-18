@@ -95,13 +95,13 @@ public class GuiInventory extends GuiPage
 		Ware playerWare = _player.getWare( _ware.getName() );
 		if( playerWare != null )
 		{
-			_inventoryWareLabel.setText( Integer.toString( playerWare.getQuantity() ) );
+			_inventoryWareLabel.setText( Integer.toString( playerWare.getSupply() ) );
 		}
 
 		Ware cityWare = _city.getWare( _ware.getName() );
 		if( cityWare != null )
 		{
-			_cityWareLabel.setText( Integer.toString( cityWare.getQuantity() ) );
+			_cityWareLabel.setText( Integer.toString( cityWare.getSupply() ) );
 		}
 	}
 

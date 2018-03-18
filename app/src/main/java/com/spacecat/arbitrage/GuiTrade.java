@@ -19,9 +19,12 @@ public class GuiTrade
 	private int _currentPage;
 	private Ware _selectedWare;
 	private City _city;
+	private Player _player;
 
 	public void setPlayer( Player player )
 	{
+		_player = player;
+
 		((GuiWares)_pages[PAGE_WARES]).setPlayer( player );
 		((GuiInventory)_pages[PAGE_INVENTORY]).setPlayer( player );
 		((GuiTransaction)_pages[PAGE_TRANSACTION]).setPlayer( player );
@@ -105,6 +108,17 @@ public class GuiTrade
 									 } );
 
 		GuiTransaction transaction = new GuiTransaction();
+		transaction.setOnConfirmation( new GuiTransaction.IConfirmationListener()
+									   {
+										   @Override
+										   public void onConfirm( Ware ware, Money price )
+										   {
+											   _player.buyWares( ware, price );
+
+											   GuiTransaction t = (GuiTransaction)_pages[PAGE_TRANSACTION];
+											   t.updateAppearance();
+										   }
+									   } );
 
 		_pages[PAGE_WARES] = wares;
 		_pages[PAGE_INVENTORY] = inventory;
