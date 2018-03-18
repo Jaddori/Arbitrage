@@ -43,7 +43,7 @@ public class GuiElement
 		_foregroundColor = fg;
 		_pressedColor = pressed;
 	}
-	public void setTouchListener( ITouchListener listener ) { _touchListener = listener; }
+	public void setOnTouch( ITouchListener listener ) { _touchListener = listener; }
 	public void setRounded( boolean rounded ) { _rounded = rounded; }
 	public void setCurves( Vec2 curves ) { _curves = new Vec2( curves ); }
 

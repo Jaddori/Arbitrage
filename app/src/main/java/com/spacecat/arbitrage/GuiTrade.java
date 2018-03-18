@@ -17,6 +17,8 @@ public class GuiTrade
 	private GuiPage[] _pages;
 	private GuiNavigationBar _navigationBar;
 	private int _currentPage;
+	private Ware _selectedWare;
+	private City _city;
 
 	public void setPlayer( Player player )
 	{
@@ -27,6 +29,8 @@ public class GuiTrade
 
 	public void setCity( City city )
 	{
+		_city = city;
+
 		((GuiWares)_pages[PAGE_WARES]).setCity( city );
 		((GuiInventory)_pages[PAGE_INVENTORY]).setCity( city );
 		((GuiTransaction)_pages[PAGE_TRANSACTION]).setCity( city );
@@ -48,20 +52,86 @@ public class GuiTrade
 		_currentPage = 0;
 
 		_pages = new GuiPage[MAX_PAGES];
-		_pages[PAGE_WARES] = new GuiWares();
-		_pages[PAGE_INVENTORY] = new GuiInventory();
-		_pages[PAGE_TRANSACTION] = new GuiTransaction();
+
+		GuiWares wares = new GuiWares();
+		wares.setOnWareSelected( new GuiWares.IWareListener()
+								 {
+									 @Override
+									 public void onWareSelected( Ware ware )
+									 {
+										 _currentPage = PAGE_INVENTORY;
+										 GuiInventory inventory = (GuiInventory)_pages[_currentPage];
+
+										 _selectedWare = ware;
+										 inventory.setWare( ware );
+										 inventory.appearing();
+
+										 _navigationBar.addStage( ware.getName(), new GuiElement.ITouchListener()
+										 {
+											 @Override
+											 public void onTouch( MotionEvent e )
+											 {
+												 _currentPage = PAGE_INVENTORY;
+											 }
+										 } );
+									 }
+								 } );
+
+		GuiInventory inventory = new GuiInventory();
+		inventory.setOnModeSelected( new GuiInventory.IModeListener()
+									 {
+										 @Override
+										 public void onModeSelected( int mode )
+										 {
+											 _currentPage = PAGE_TRANSACTION;
+
+											 GuiTransaction transaction = (GuiTransaction)_pages[_currentPage];
+											 transaction.setWare( _selectedWare );
+											 transaction.appearing();
+
+											 String modeName = "Buy";
+											 if( mode == transaction.MODE_SELL )
+											 	modeName = "Sell";
+
+											 _navigationBar.addStage( modeName, new GuiElement.ITouchListener()
+											 {
+												 @Override
+												 public void onTouch( MotionEvent e )
+												 {
+													 _currentPage = PAGE_TRANSACTION;
+												 }
+											 } );
+										 }
+									 } );
+
+		GuiTransaction transaction = new GuiTransaction();
+
+		_pages[PAGE_WARES] = wares;
+		_pages[PAGE_INVENTORY] = inventory;
+		_pages[PAGE_TRANSACTION] = transaction;
+
+		for( GuiPage page : _pages )
+			page.setVisible( true );
 
 		Rect navBounds = Utils.makeRect( 0, Utils.windowSize.y-512-128, Utils.windowSize.x, 128 );
 		_navigationBar = new GuiNavigationBar( navBounds );
 		_navigationBar.setHasBackButton( false );
-		_navigationBar.addStage( "First", null );
 	}
 
 	public void appearing()
 	{
-		_currentPage = 0;
+		_currentPage = PAGE_WARES;
 		_pages[_currentPage].appearing();
+
+		_navigationBar.resetStages();
+		_navigationBar.addStage( _city.getName(), new GuiElement.ITouchListener()
+		{
+			@Override
+			public void onTouch( MotionEvent e )
+			{
+				_currentPage = PAGE_WARES;
+			}
+		} );
 	}
 
 	public void disappearing()
@@ -71,9 +141,6 @@ public class GuiTrade
 
 	public void draw()
 	{
-		// TODO: This is temporary. Remove this:
-		_pages[_currentPage].setVisible( true );
-
 		_pages[_currentPage].draw();
 		_navigationBar.draw();
 	}
@@ -87,12 +154,6 @@ public class GuiTrade
 
 		if( _navigationBar.onTouch( e ) )
 			result = true;
-
-		if( e.getActionMasked() == MotionEvent.ACTION_UP )
-		{
-			_currentPage = ( ( _currentPage+1 ) % 3 );
-			_pages[_currentPage].appearing();
-		}
 
 		return result;
 	}

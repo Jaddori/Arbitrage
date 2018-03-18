@@ -62,6 +62,7 @@ public class GameView extends View implements View.OnTouchListener
 		_player = new Player( "Bojangles" );
 		_player.getMoney().add( new Money( 10 ) );
 		_player.getWares().add( new Ware( "Apples", 7 ) );
+		_player.getWares().add( new Ware( "Bananas", 15 ) );
 
 		_guiTrade = new GuiTrade();
 		_guiTrade.setPlayer( _player );

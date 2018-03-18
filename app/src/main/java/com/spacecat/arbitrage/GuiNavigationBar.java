@@ -82,6 +82,11 @@ public class GuiNavigationBar extends GuiElement
 		return result;
 	}
 
+	public void resetStages()
+	{
+		_stages.clear();
+	}
+
 	public void addStage( String text, GuiButton.ITouchListener delegate )
 	{
 		// add padding
@@ -110,7 +115,7 @@ public class GuiNavigationBar extends GuiElement
 		bounds.bottom = _bounds.bottom;
 
 		GuiButton stage = new GuiButton( bounds, text );
-		stage.setTouchListener( delegate );
+		stage.setOnTouch( delegate );
 		stage.setColors( 0, 0, Color.GRAY );
 
 		stage.getLabel().getText().calculateTextBounds();

@@ -13,18 +13,26 @@ import android.widget.Toast;
 
 public class GuiWares extends GuiPage
 {
+	public interface IWareListener
+	{
+		void onWareSelected( Ware ware );
+	}
+
 	private final int MAX_WARES = 3;
 
 	private GuiButton[] _buttons;
 	private int _wareCount;
 	private City _city;
+	private Ware[] _cityWares;
 	private Player _player;
+	private IWareListener _wareListener;
 
 	public void setCity( City city ) { _city = city; }
 	public void setPlayer( Player player )
 	{
 		_player = player;
 	}
+	public void setOnWareSelected( IWareListener listener ) { _wareListener = listener; }
 
 	public boolean getVisible() { return _visible; }
 
@@ -51,22 +59,26 @@ public class GuiWares extends GuiPage
 		int verticalOffset = spaceSize;
 		for( int i=0; i<MAX_WARES; i++ )
 		{
+			final int index = i;
+
 			Rect buttonRect = Utils.makeRect( 64, _bounds.top + verticalOffset, buttonWidth, buttonHeight );
 			_buttons[i] = new GuiButton( buttonRect );
 			_buttons[i].setColors( Color.RED, Color.BLACK, Color.GRAY );
-			_buttons[i].setTouchListener( new GuiButton.ITouchListener()
+			_buttons[i].setOnTouch( new GuiButton.ITouchListener()
 										  {
 											  @Override
 											  public void onTouch( MotionEvent e )
 											  {
-												  //setWare( 2, "CLICKED" );
+											  	onButtonPressed( index );
 											  }
 										  } );
 
 			verticalOffset += spaceSize + buttonHeight;
-
-			_elements.add( _buttons[i] );
 		}
+		addElements( _buttons );
+
+		_cityWares = new Ware[MAX_WARES];
+
 		_wareCount = 0;
 
 		_visible = false;
@@ -84,6 +96,7 @@ public class GuiWares extends GuiPage
 		for( int i=0; i<_wareCount; i++ )
 		{
 			_buttons[i].setText( _city.getWares().get( i ).getName() );
+			_cityWares[i] = _city.getWares().get( i );
 		}
 	}
 
@@ -92,5 +105,11 @@ public class GuiWares extends GuiPage
 	{
 		for( int i=0; i<_wareCount; i++ )
 			_buttons[i].draw();
+	}
+
+	private void onButtonPressed( int index )
+	{
+		if( _wareListener != null )
+			_wareListener.onWareSelected( _cityWares[index] );
 	}
 }
