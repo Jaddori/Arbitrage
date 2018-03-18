@@ -67,6 +67,7 @@ public class GameView extends View implements View.OnTouchListener
 		_guiTrade.setPlayer( _player );
 		_guiTrade.setCity( city );
 		_guiTrade.setWare( new Ware( "Apples" ) );
+		_guiTrade.appearing();
 	}
 
 	@Override

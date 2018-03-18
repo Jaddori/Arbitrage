@@ -20,19 +20,7 @@ public class GuiWares extends GuiPage
 	private City _city;
 	private Player _player;
 
-	public void setCity( City city )
-	{
-		_city = city;
-
-		_wareCount = _city.getWares().size();
-
-		// NOTE: Make sure _wareCount < MAX_WARES
-
-		for( int i=0; i<_wareCount; i++ )
-		{
-			_buttons[i].setText( _city.getWares().get( i ).getName() );
-		}
-	}
+	public void setCity( City city ) { _city = city; }
 	public void setPlayer( Player player )
 	{
 		_player = player;
@@ -82,6 +70,21 @@ public class GuiWares extends GuiPage
 		_wareCount = 0;
 
 		_visible = false;
+	}
+
+	@Override
+	public void appearing()
+	{
+		super.appearing();
+
+		_wareCount = _city.getWares().size();
+
+		// NOTE: Make sure _wareCount < MAX_WARES
+
+		for( int i=0; i<_wareCount; i++ )
+		{
+			_buttons[i].setText( _city.getWares().get( i ).getName() );
+		}
 	}
 
 	@Override

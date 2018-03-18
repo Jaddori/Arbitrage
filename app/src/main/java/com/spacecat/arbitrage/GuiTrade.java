@@ -22,17 +22,20 @@ public class GuiTrade
 	{
 		((GuiWares)_pages[PAGE_WARES]).setPlayer( player );
 		((GuiInventory)_pages[PAGE_INVENTORY]).setPlayer( player );
+		((GuiTransaction)_pages[PAGE_TRANSACTION]).setPlayer( player );
 	}
 
 	public void setCity( City city )
 	{
 		((GuiWares)_pages[PAGE_WARES]).setCity( city );
 		((GuiInventory)_pages[PAGE_INVENTORY]).setCity( city );
+		((GuiTransaction)_pages[PAGE_TRANSACTION]).setCity( city );
 	}
 
 	public void setWare( Ware ware )
 	{
 		((GuiInventory)_pages[PAGE_INVENTORY]).setWare( ware );
+		((GuiTransaction)_pages[PAGE_TRANSACTION]).setWare( ware );
 	}
 
 	public GuiTrade()
@@ -47,11 +50,23 @@ public class GuiTrade
 		_pages = new GuiPage[MAX_PAGES];
 		_pages[PAGE_WARES] = new GuiWares();
 		_pages[PAGE_INVENTORY] = new GuiInventory();
+		_pages[PAGE_TRANSACTION] = new GuiTransaction();
 
 		Rect navBounds = Utils.makeRect( 0, Utils.windowSize.y-512-128, Utils.windowSize.x, 128 );
 		_navigationBar = new GuiNavigationBar( navBounds );
 		_navigationBar.setHasBackButton( false );
 		_navigationBar.addStage( "First", null );
+	}
+
+	public void appearing()
+	{
+		_currentPage = 0;
+		_pages[_currentPage].appearing();
+	}
+
+	public void disappearing()
+	{
+		_pages[_currentPage].disappearing();
 	}
 
 	public void draw()
@@ -72,6 +87,12 @@ public class GuiTrade
 
 		if( _navigationBar.onTouch( e ) )
 			result = true;
+
+		if( e.getActionMasked() == MotionEvent.ACTION_UP )
+		{
+			_currentPage = ( ( _currentPage+1 ) % 3 );
+			_pages[_currentPage].appearing();
+		}
 
 		return result;
 	}

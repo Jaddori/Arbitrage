@@ -22,22 +22,7 @@ public class GuiInventory extends GuiPage
 
 	public void setPlayer( Player player ) { _player = player; }
 	public void setCity( City city ) { _city = city; }
-	public void setWare( Ware ware )
-	{
-		_ware = new Ware( ware );
-
-		Ware playerWare = _player.getWare( _ware.getName() );
-		if( playerWare != null )
-		{
-			_inventoryWareLabel.setText( Integer.toString( playerWare.getQuantity() ) );
-		}
-
-		Ware cityWare = _city.getWare( _ware.getName() );
-		if( cityWare != null )
-		{
-			_cityWareLabel.setText( Integer.toString( cityWare.getQuantity() ) );
-		}
-	}
+	public void setWare( Ware ware ) { _ware = new Ware( ware ); }
 
 	public GuiInventory()
 	{
@@ -76,6 +61,22 @@ public class GuiInventory extends GuiPage
 		_sellButton = new GuiButton( Utils.makeRect( buttonMargin*2 + buttonWidth, ws.y - 160, buttonWidth, buttonHeight ), "Sell" );
 		_sellButton.getLabel().getText().setHorizontalAlignment( Alignment.Center );
 		_sellButton.setColors( Color.RED, Color.BLACK, Color.GRAY );
+	}
+
+	@Override
+	public void appearing()
+	{
+		Ware playerWare = _player.getWare( _ware.getName() );
+		if( playerWare != null )
+		{
+			_inventoryWareLabel.setText( Integer.toString( playerWare.getQuantity() ) );
+		}
+
+		Ware cityWare = _city.getWare( _ware.getName() );
+		if( cityWare != null )
+		{
+			_cityWareLabel.setText( Integer.toString( cityWare.getQuantity() ) );
+		}
 	}
 
 	@Override

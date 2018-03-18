@@ -35,6 +35,20 @@ public class GuiPage
 		_visible = true;
 	}
 
+	public void appearing()
+	{
+	}
+
+	public void disappearing()
+	{
+	}
+
+	public void addElements( GuiElement... elements )
+	{
+		for( GuiElement element : elements )
+			_elements.add( element );
+	}
+
 	public void draw()
 	{
 		if( _visible )
