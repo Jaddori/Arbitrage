@@ -1,5 +1,6 @@
 package com.spacecat.arbitrage;
 
+import android.graphics.Rect;
 import android.view.MotionEvent;
 
 /**
@@ -20,6 +21,7 @@ public class GuiTransaction extends GuiPage
 	private GuiLabel _capitalValueLabel;
 	private GuiLabel _wareLabel;
 	private GuiLabel _wareValueLabel;
+	private GuiSlider _slider;
 	private GuiButton _confirmButton;
 	private Player _player;
 	private City _city;
@@ -55,6 +57,9 @@ public class GuiTransaction extends GuiPage
 		_wareLabel = new GuiLabel( Utils.makeRect( PADDING, _bounds.top + 196, ws.x / 2 - PADDING, 64 ) );
 		_wareValueLabel = new GuiLabel( Utils.makeRect( ws.x / 2, _bounds.top + 196, ws.x / 2 - PADDING, 64 ) );
 
+		Rect sliderBounds = Utils.makeRect( PADDING, _bounds.top + 196, ws.x - PADDING*2, 64 );
+		_slider = new GuiSlider( sliderBounds );;
+
 		_confirmButton = new GuiButton( Utils.makeRect( PADDING, ws.y - 160, ws.x - PADDING*2, 96 ), "Confirm" );
 		_confirmButton.getLabel().getText().setHorizontalAlignment( Alignment.Center );
 		_confirmButton.setOnTouch( new GuiElement.ITouchListener()
@@ -66,7 +71,7 @@ public class GuiTransaction extends GuiPage
 									   }
 								   } );
 
-				addElements( capitalLabel, _capitalValueLabel, _wareLabel, _wareValueLabel, _confirmButton );
+		addElements( capitalLabel, _capitalValueLabel, /*_wareLabel, _wareValueLabel,*/ _slider, _confirmButton );
 	}
 
 	@Override
@@ -80,13 +85,15 @@ public class GuiTransaction extends GuiPage
 
 		_wareLabel.setText( wareName + ": " );
 
-		int quantity = 0;
+		int supply = 0;
 		if( _mode == MODE_BUY )
-			quantity = _city.getWare( wareName ).getSupply();
+			supply = _city.getWare( wareName ).getSupply();
 		else
-			quantity = _player.getWare( wareName ).getSupply();
+			supply = _player.getWare( wareName ).getSupply();
 
-		_wareValueLabel.setText( Integer.toString( quantity ) );
+		_wareValueLabel.setText( Integer.toString( supply ) );
+
+		_slider.setMaxValue( supply );
 	}
 
 	public void updateAppearance()

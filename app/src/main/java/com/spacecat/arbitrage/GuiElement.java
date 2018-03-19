@@ -66,13 +66,14 @@ public class GuiElement
 
 	public GuiElement( Rect bounds )
 	{
-		initialize();
 		_bounds = new Rect( bounds );
+		initialize();
 	}
 
 	protected void initialize()
 	{
-		_bounds = new Rect();
+		if( _bounds == null )
+			_bounds = new Rect();
 		_visible = true;
 		_enabled = true;
 		_pressed = false;

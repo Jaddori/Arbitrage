@@ -30,7 +30,8 @@ public class GuiPage
 
 	protected void initialize()
 	{
-		_bounds = new Rect();
+		if( _bounds == null )
+			_bounds = new Rect();
 		_elements = new ArrayList<>();
 		_visible = true;
 	}

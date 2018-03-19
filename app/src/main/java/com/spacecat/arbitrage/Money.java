@@ -12,7 +12,11 @@ public class Money
 	private int _silver;
 
 	public void setGold( int gold ) { _gold = gold; }
-	public void setSilver( int silver ) { _silver = silver; }
+	public void setSilver( int silver )
+	{
+		_silver = silver;
+		transform();
+	}
 
 	public int getGold() { return _gold; }
 	public int getSilver() { return _silver; }
@@ -61,7 +65,7 @@ public class Money
 	public void sub( Money ref )
 	{
 		_gold -= ref._gold;
-		_silver += ref._silver;
+		_silver -= ref._silver;
 
 		transform();
 	}
@@ -114,12 +118,28 @@ public class Money
 		transform();
 	}
 
-	public boolean greaterThan( Money ref )
+	public boolean greater( Money ref )
 	{
 		int total = _gold * SILVER_PER_GOLD + _silver;
 		int refTotal = ref._gold * SILVER_PER_GOLD + ref._silver;
 
 		return ( total > refTotal );
+	}
+
+	public boolean greaterEquals( Money ref )
+	{
+		int total = _gold * SILVER_PER_GOLD + _silver;
+		int refTotal = ref._gold * SILVER_PER_GOLD + ref._silver;
+
+		return ( total >= refTotal );
+	}
+
+	public boolean lessEquals( Money ref )
+	{
+		int total = _gold * SILVER_PER_GOLD + _silver;
+		int refTotal = ref._gold * SILVER_PER_GOLD + ref._silver;
+
+		return ( total <= refTotal );
 	}
 
 	public boolean equals( Money ref )

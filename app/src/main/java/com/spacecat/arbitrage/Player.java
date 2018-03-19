@@ -41,7 +41,7 @@ public class Player
 	{
 		boolean result = false;
 
-		if( _money.greaterThan( price ) )
+		if( _money.greaterEquals( price ) )
 		{
 			_money.sub( price );
 			_wares.add( new Ware( ware ) );
