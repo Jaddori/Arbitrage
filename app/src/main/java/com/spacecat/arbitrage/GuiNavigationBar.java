@@ -126,4 +126,12 @@ public class GuiNavigationBar extends GuiElement
 
 		_stageOffset += bounds.width() + STAGE_PADDING;
 	}
+
+	public void setStage( int index, String text )
+	{
+		if( index >= 0 && index < _stages.size() )
+		{
+			_stages.get( index ).setText( text );
+		}
+	}
 }

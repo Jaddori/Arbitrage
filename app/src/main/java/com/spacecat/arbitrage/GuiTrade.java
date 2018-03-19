@@ -69,14 +69,8 @@ public class GuiTrade
 										 inventory.setWare( ware );
 										 inventory.appearing();
 
-										 _navigationBar.addStage( ware.getName(), new GuiElement.ITouchListener()
-										 {
-											 @Override
-											 public void onTouch( MotionEvent e )
-											 {
-												 _currentPage = PAGE_INVENTORY;
-											 }
-										 } );
+										 _navigationBar.setStage( PAGE_INVENTORY, ware.getName() );
+										 _navigationBar.showStage( PAGE_INVENTORY );
 									 }
 								 } );
 
@@ -93,17 +87,9 @@ public class GuiTrade
 											 transaction.appearing();
 
 											 String modeName = "Buy";
-											 if( mode == transaction.MODE_SELL )
-											 	modeName = "Sell";
-
-											 _navigationBar.addStage( modeName, new GuiElement.ITouchListener()
-											 {
-												 @Override
-												 public void onTouch( MotionEvent e )
-												 {
-													 _currentPage = PAGE_TRANSACTION;
-												 }
-											 } );
+											 if( mode == transaction.MODE_SELL
+											 _navigationBar.setStage( PAGE_TRANSACTION, modeName );
+											 _navigationBar.showStage( PAGE_TRANSACTION );
 										 }
 									 } );
 
@@ -130,15 +116,7 @@ public class GuiTrade
 		Rect navBounds = Utils.makeRect( 0, Utils.windowSize.y-512-128, Utils.windowSize.x, 128 );
 		_navigationBar = new GuiNavigationBar( navBounds );
 		_navigationBar.setHasBackButton( false );
-	}
-
-	public void appearing()
-	{
-		_currentPage = PAGE_WARES;
-		_pages[_currentPage].appearing();
-
-		_navigationBar.resetStages();
-		_navigationBar.addStage( _city.getName(), new GuiElement.ITouchListener()
+		_navigationBar.addStage( "", new GuiElement.ITouchListener()
 		{
 			@Override
 			public void onTouch( MotionEvent e )
@@ -146,6 +124,23 @@ public class GuiTrade
 				_currentPage = PAGE_WARES;
 			}
 		} );
+		_navigationBar.addStage( "", new GuiElement.ITouchListener()
+		{
+			@Override
+			public void onTouch( MotionEvent e )
+			{
+				_currentPage = PAGE_INVENTORY;
+			}
+		} );
+	}
+
+	public void appearing()
+	{
+		_currentPage = PAGE_WARES;
+		_pages[_currentPage].appearing();
+
+		_navigationBar.setStage( PAGE_WARES, _city.getName() );
+		_navigationBar.showStage( PAGE_WARES );
 	}
 
 	public void disappearing()
