@@ -17,7 +17,7 @@ public class GuiNavigationBar extends GuiElement
 	private boolean _hasBackButton;
 	private ArrayList<GuiButton> _stages;
 	private ArrayList<GuiAlignedText> _stagePaddings;
-	private int _stageOffset;
+	private int _currentStage;
 
 	public void setHasBackButton( boolean backButton ) { _hasBackButton = backButton; }
 
@@ -41,7 +41,6 @@ public class GuiNavigationBar extends GuiElement
 
 		_stages = new ArrayList<>();
 		_stagePaddings = new ArrayList<>();
-		_stageOffset = STAGE_PADDING;
 	}
 
 	@Override
@@ -56,7 +55,7 @@ public class GuiNavigationBar extends GuiElement
 		}
 		else
 		{
-			for( GuiAlignedText padding : _stagePaddings )
+			/*for( GuiAlignedText padding : _stagePaddings )
 			{
 				padding.draw();
 			}
@@ -64,6 +63,16 @@ public class GuiNavigationBar extends GuiElement
 			for( GuiButton stage : _stages )
 			{
 				stage.draw();
+			}*/
+
+			for( int i=0; i<_currentStage; i++ )
+			{
+				_stagePaddings.get( i ).draw();
+			}
+
+			for( int i=0; i<_currentStage+1; i++ )
+			{
+				_stages.get( i ).draw();
 			}
 		}
 	}
@@ -95,36 +104,19 @@ public class GuiNavigationBar extends GuiElement
 			GuiAlignedText padding = new GuiAlignedText( ">" );
 			padding.calculateTextBounds();
 
-			Rect paddingBounds = new Rect();
-			paddingBounds.left = _stageOffset;
-			paddingBounds.top = _bounds.top;
-			paddingBounds.right = paddingBounds.left + (int)padding.getTextWidth();
-			paddingBounds.bottom = _bounds.bottom;
-
-			padding.setBounds( paddingBounds );
-
 			_stagePaddings.add( padding );
-			_stageOffset += paddingBounds.width() + STAGE_PADDING;
 		}
 
 		// add stage
 		Rect bounds = new Rect();
-		bounds.left = _stageOffset;
-		bounds.top = _bounds.top;
-		bounds.right = bounds.left;
-		bounds.bottom = _bounds.bottom;
 
 		GuiButton stage = new GuiButton( bounds, text );
 		stage.setOnTouch( delegate );
 		stage.setColors( 0, 0, Color.GRAY );
 
-		stage.getLabel().getText().calculateTextBounds();
-		bounds.right += stage.getLabel().getText().getTextWidth() + stage.getLabel().getText().getTextPadding().x*2;
-
-		stage.setBounds( bounds );
 		_stages.add( stage );
 
-		_stageOffset += bounds.width() + STAGE_PADDING;
+		updateDimensions();
 	}
 
 	public void setStage( int index, String text )
@@ -132,6 +124,41 @@ public class GuiNavigationBar extends GuiElement
 		if( index >= 0 && index < _stages.size() )
 		{
 			_stages.get( index ).setText( text );
+			updateDimensions();
+		}
+	}
+
+	public void showStage( int index )
+	{
+		_currentStage = index;
+	}
+
+	private void updateDimensions()
+	{
+		int offset = STAGE_PADDING;
+		for( int i=0; i<_stages.size(); i++ )
+		{
+			// update padding dimensions
+			if( i > 0 )
+			{
+				GuiAlignedText padding = _stagePaddings.get( i-1 );
+
+				Rect paddingBounds = new Rect( offset, _bounds.top, offset + (int)padding.getTextWidth(), _bounds.bottom );
+				padding.setBounds( paddingBounds );
+
+				offset += paddingBounds.width() + STAGE_PADDING;
+			}
+
+			// update stage dimensions
+			Rect bounds = new Rect( offset, _bounds.top, offset, _bounds.bottom );
+
+			GuiButton stage = _stages.get( i );
+			stage.getLabel().getText().calculateTextBounds();
+
+			bounds.right += stage.getLabel().getText().getTextWidth() + stage.getLabel().getText().getTextPadding().x*2;
+			stage.setBounds( bounds );
+
+			offset += bounds.width() + STAGE_PADDING;
 		}
 	}
 }

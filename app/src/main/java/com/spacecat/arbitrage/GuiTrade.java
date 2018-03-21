@@ -87,7 +87,9 @@ public class GuiTrade
 											 transaction.appearing();
 
 											 String modeName = "Buy";
-											 if( mode == transaction.MODE_SELL
+											 if( mode == transaction.MODE_SELL )
+											 	modeName = "Sell";
+
 											 _navigationBar.setStage( PAGE_TRANSACTION, modeName );
 											 _navigationBar.showStage( PAGE_TRANSACTION );
 										 }
@@ -122,6 +124,7 @@ public class GuiTrade
 			public void onTouch( MotionEvent e )
 			{
 				_currentPage = PAGE_WARES;
+				_navigationBar.showStage( _currentPage );
 			}
 		} );
 		_navigationBar.addStage( "", new GuiElement.ITouchListener()
@@ -130,8 +133,10 @@ public class GuiTrade
 			public void onTouch( MotionEvent e )
 			{
 				_currentPage = PAGE_INVENTORY;
+				_navigationBar.showStage( _currentPage );
 			}
 		} );
+		_navigationBar.addStage( "", null );
 	}
 
 	public void appearing()
