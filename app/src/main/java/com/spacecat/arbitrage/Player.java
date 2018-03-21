@@ -37,14 +37,26 @@ public class Player
 		_wares = new ArrayList<>();
 	}
 
-	public boolean buyWares( Ware ware, Money price )
+	public boolean buyWares( Ware ware, Money totalPrice, int amount )
 	{
 		boolean result = false;
 
-		if( _money.greaterEquals( price ) )
+		if( _money.greaterEquals( totalPrice ) )
 		{
-			_money.sub( price );
-			_wares.add( new Ware( ware ) );
+			_money.sub( totalPrice );
+
+			Ware correspondingWare = getWare( ware.getName() );
+			if( correspondingWare != null )
+			{
+				correspondingWare.incrementSupply( amount );
+			}
+			else
+			{
+				correspondingWare = new Ware( ware );
+				correspondingWare.setSupply( amount );
+
+				_wares.add( correspondingWare );
+			}
 
 			result = true;
 		}
@@ -52,7 +64,7 @@ public class Player
 		return result;
 	}
 
-	public boolean sellWares( Ware ware, Money price )
+	public boolean sellWares( Ware ware, Money totalPrice, int amount )
 	{
 		boolean result = false;
 
@@ -65,8 +77,8 @@ public class Player
 		{
 			if( myWare.getSupply() > ware.getSupply() )
 			{
-				myWare.decrementSupply( ware.getSupply() );
-				_money.add( price );
+				myWare.decrementSupply( amount );
+				_money.add( totalPrice );
 
 				result = true;
 			}
@@ -98,5 +110,10 @@ public class Player
 		}
 
 		return result;
+	}
+
+	public boolean canAfford( Money price )
+	{
+		return _money.greaterEquals( price );
 	}
 }

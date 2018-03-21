@@ -55,16 +55,6 @@ public class GuiNavigationBar extends GuiElement
 		}
 		else
 		{
-			/*for( GuiAlignedText padding : _stagePaddings )
-			{
-				padding.draw();
-			}
-
-			for( GuiButton stage : _stages )
-			{
-				stage.draw();
-			}*/
-
 			for( int i=0; i<_currentStage; i++ )
 			{
 				_stagePaddings.get( i ).draw();

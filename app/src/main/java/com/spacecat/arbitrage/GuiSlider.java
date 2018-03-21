@@ -10,6 +10,11 @@ import android.view.MotionEvent;
 
 public class GuiSlider extends GuiElement
 {
+	public interface IValueChangeListener
+	{
+		void onValueChanged( int oldValue, int newValue );
+	}
+
 	private static final int SLIDER_INDENT_HEIGHT = 32;
 	private static final int SLIDER_PAD_WIDTH = 32;
 
@@ -20,6 +25,7 @@ public class GuiSlider extends GuiElement
 	private GuiAlignedText _curValueText;
 	private int _value;
 	private int _maxValue;
+	private IValueChangeListener _valueChangedListener;
 
 	public void setValue( int value )
 	{
@@ -31,6 +37,10 @@ public class GuiSlider extends GuiElement
 		_maxValue = value;
 		_maxValueText.setText( Integer.toString( value ) );
 		updateDimensions();
+	}
+	public void setOnValueChanged( IValueChangeListener listener )
+	{
+		_valueChangedListener = listener;
 	}
 
 	public int getValue() { return _value; }
@@ -137,13 +147,26 @@ public class GuiSlider extends GuiElement
 
 		if( result )
 		{
+			int oldValue = _value;
+
 			float percentage = (float)( e.getX() - _bounds.left ) / (float)_bounds.width();
 			float potentialValue = percentage * _maxValue;
 			_value = Math.round( potentialValue );
 
 			updatePad();
+
+			if( oldValue != _value )
+			{
+				if( _valueChangedListener != null )
+					_valueChangedListener.onValueChanged( oldValue, _value );
+			}
 		}
 
 		return result;
+	}
+
+	public void setCurrentValueTextColor( int color )
+	{
+		_curValueText.getPaint().setColor( color );
 	}
 }

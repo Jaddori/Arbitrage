@@ -78,6 +78,8 @@ public class GameView extends View implements View.OnTouchListener
 		{
 			final DrawFilter filter = new PaintFlagsDrawFilter( Paint.ANTI_ALIAS_FLAG, 0);
 			canvas.setDrawFilter( filter );
+
+			_disabledAntiAlias = true;
 		}
 
 		super.onDraw( canvas );
@@ -109,12 +111,17 @@ public class GameView extends View implements View.OnTouchListener
 					_selectedCity = city;
 			}
 
-			if( _selectedCity != null )
+			if( e.getActionMasked() == MotionEvent.ACTION_UP )
 			{
-				_guiTrade.setCity( _selectedCity );
+				if( _selectedCity != null )
+				{
+					_guiTrade.setCity( _selectedCity );
+					_guiTrade.appearing();
+					_guiTrade.setVisible( true );
+				}
+				else
+					_guiTrade.setVisible( false );
 			}
-			//else
-			//	_guiTrade.setVisible( false );
 		}
 
 		invalidate();

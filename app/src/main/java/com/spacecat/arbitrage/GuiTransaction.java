@@ -1,5 +1,6 @@
 package com.spacecat.arbitrage;
 
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.view.MotionEvent;
 
@@ -11,7 +12,7 @@ public class GuiTransaction extends GuiPage
 {
 	public interface IConfirmationListener
 	{
-		void onConfirm( Ware ware, Money price );
+		void onConfirm( Ware ware, Money totalPrice, int amount );
 	}
 
 	private final int PADDING = 32;
@@ -19,8 +20,6 @@ public class GuiTransaction extends GuiPage
 	public final int MODE_SELL = 1;
 
 	private GuiLabel _capitalValueLabel;
-	private GuiLabel _wareLabel;
-	private GuiLabel _wareValueLabel;
 	private GuiSlider _slider;
 	private GuiButton _confirmButton;
 	private Player _player;
@@ -54,13 +53,25 @@ public class GuiTransaction extends GuiPage
 		capitalLabel.setText( "Capital: " );
 
 		_capitalValueLabel = new GuiLabel( Utils.makeRect( ws.x / 2, _bounds.top + 64, ws.x / 2 - PADDING, 64 ) );
-		_wareLabel = new GuiLabel( Utils.makeRect( PADDING, _bounds.top + 196, ws.x / 2 - PADDING, 64 ) );
-		_wareValueLabel = new GuiLabel( Utils.makeRect( ws.x / 2, _bounds.top + 196, ws.x / 2 - PADDING, 64 ) );
+		//_wareLabel = new GuiLabel( Utils.makeRect( PADDING, _bounds.top + 196, ws.x / 2 - PADDING, 64 ) );
+		//_wareValueLabel = new GuiLabel( Utils.makeRect( ws.x / 2, _bounds.top + 196, ws.x / 2 - PADDING, 64 ) );
 
-		Rect sliderBounds = Utils.makeRect( PADDING, _bounds.top + 196, ws.x - PADDING*2, 64 );
-		_slider = new GuiSlider( sliderBounds );;
+		Rect sliderBounds = Utils.makeRect( PADDING, _bounds.top + 248, ws.x - PADDING*2, 64 );
+		_slider = new GuiSlider( sliderBounds );
+		_slider.setOnValueChanged( new GuiSlider.IValueChangeListener()
+								   {
+									   @Override
+									   public void onValueChanged( int oldValue, int newValue )
+									   {
+										   Money price = _city.calculatePrice( _ware.getName(), newValue );
+										   if( _player.canAfford( price ) )
+										   		_slider.setCurrentValueTextColor( Color.WHITE );
+										   else
+										   		_slider.setCurrentValueTextColor( Color.RED );
+									   }
+								   } );
 
-		_confirmButton = new GuiButton( Utils.makeRect( PADDING, ws.y - 160, ws.x - PADDING*2, 96 ), "Confirm" );
+		_confirmButton = new GuiButton( Utils.makeRect( PADDING, ws.y - 160, ws.x - PADDING * 2, 96 ), "Confirm" );
 		_confirmButton.getLabel().getText().setHorizontalAlignment( Alignment.Center );
 		_confirmButton.setOnTouch( new GuiElement.ITouchListener()
 								   {
@@ -79,21 +90,7 @@ public class GuiTransaction extends GuiPage
 	{
 		super.appearing();
 
-		_capitalValueLabel.setText( Integer.toString( _player.getMoney().getGold() ) );
-
-		String wareName = _ware.getName();
-
-		_wareLabel.setText( wareName + ": " );
-
-		int supply = 0;
-		if( _mode == MODE_BUY )
-			supply = _city.getWare( wareName ).getSupply();
-		else
-			supply = _player.getWare( wareName ).getSupply();
-
-		_wareValueLabel.setText( Integer.toString( supply ) );
-
-		_slider.setMaxValue( supply );
+		updateAppearance();
 	}
 
 	public void updateAppearance()
@@ -102,23 +99,27 @@ public class GuiTransaction extends GuiPage
 
 		String wareName = _ware.getName();
 
-		_wareLabel.setText( wareName + ": " );
-
-		int quantity = 0;
+		int supply = 0;
 		if( _mode == MODE_BUY )
-			quantity = _city.getWare( wareName ).getSupply();
+			supply = _city.getWare( wareName ).getSupply();
 		else
-			quantity = _player.getWare( wareName ).getSupply();
+			supply = _player.getWare( wareName ).getSupply();
 
-		_wareValueLabel.setText( Integer.toString( quantity ) );
+		_slider.setMaxValue( supply );
+		_slider.setValue( 0 );
+		_slider.setCurrentValueTextColor( Color.WHITE );
 	}
 
 	private void onConfirmation()
 	{
 		if( _confirmationListener != null )
 		{
-			Money price = _city.calculatePrice( _ware.getName(), 1 );
-			_confirmationListener.onConfirm( _ware, price );
+			int amount = _slider.getValue();
+			Money price = _city.calculatePrice( _ware.getName(), amount );
+			_confirmationListener.onConfirm( _ware, price, amount );
+
+			_slider.setValue( 0 );
+			_slider.setCurrentValueTextColor( Color.WHITE );
 		}
 	}
 }

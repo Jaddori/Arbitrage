@@ -107,4 +107,54 @@ public class City
 
 		return result;
 	}
+
+	public boolean buyWares( Ware ware, Money totalPrice, int amount )
+	{
+		boolean result = false;
+
+		//if( _money.greaterEquals( totalPrice ) )
+		{
+			//_money.sub( totalPrice );
+
+			Ware correspondingWare = getWare( ware.getName() );
+			if( correspondingWare != null )
+			{
+				correspondingWare.incrementSupply( amount );
+			}
+			else
+			{
+				correspondingWare = new Ware( ware );
+				correspondingWare.setSupply( amount );
+
+				_wares.add( correspondingWare );
+			}
+
+			result = true;
+		}
+
+		return result;
+	}
+
+	public boolean sellWares( Ware ware, Money totalPrice, int amount )
+	{
+		boolean result = false;
+
+		Ware myWare = null;
+		for( int i=0; i<_wares.size() && myWare == null; i++ )
+			if( _wares.get( i ).equals( ware ) )
+				myWare = _wares.get( i );
+
+		if( myWare != null )
+		{
+			if( myWare.getSupply() > amount )
+			{
+				myWare.decrementSupply( amount );
+				//_money.add( totalPrice );
+
+				result = true;
+			}
+		}
+
+		return result;
+	}
 }

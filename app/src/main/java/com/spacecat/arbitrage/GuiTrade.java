@@ -20,6 +20,7 @@ public class GuiTrade
 	private Ware _selectedWare;
 	private City _city;
 	private Player _player;
+	private boolean _visible;
 
 	public void setPlayer( Player player )
 	{
@@ -43,6 +44,11 @@ public class GuiTrade
 	{
 		((GuiInventory)_pages[PAGE_INVENTORY]).setWare( ware );
 		((GuiTransaction)_pages[PAGE_TRANSACTION]).setWare( ware );
+	}
+
+	public void setVisible( boolean visible )
+	{
+		_visible = visible;
 	}
 
 	public GuiTrade()
@@ -99,9 +105,10 @@ public class GuiTrade
 		transaction.setOnConfirmation( new GuiTransaction.IConfirmationListener()
 									   {
 										   @Override
-										   public void onConfirm( Ware ware, Money price )
+										   public void onConfirm( Ware ware, Money totalPrice, int amount )
 										   {
-											   _player.buyWares( ware, price );
+											   if( _player.buyWares( ware, totalPrice, amount ) )
+											   		_city.sellWares( ware, totalPrice, amount );
 
 											   GuiTransaction t = (GuiTransaction)_pages[PAGE_TRANSACTION];
 											   t.updateAppearance();
@@ -155,19 +162,25 @@ public class GuiTrade
 
 	public void draw()
 	{
-		_pages[_currentPage].draw();
-		_navigationBar.draw();
+		if( _visible )
+		{
+			_pages[_currentPage].draw();
+			_navigationBar.draw();
+		}
 	}
 
 	public boolean onTouch( MotionEvent e )
 	{
 		boolean result = false;
 
-		if( _pages[_currentPage].onTouch( e ) )
-			result = true;
+		if( _visible )
+		{
+			if( _pages[_currentPage].onTouch( e ) )
+				result = true;
 
-		if( _navigationBar.onTouch( e ) )
-			result = true;
+			if( _navigationBar.onTouch( e ) )
+				result = true;
+		}
 
 		return result;
 	}
