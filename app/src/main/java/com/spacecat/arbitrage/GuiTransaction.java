@@ -12,12 +12,12 @@ public class GuiTransaction extends GuiPage
 {
 	public interface IConfirmationListener
 	{
-		void onConfirm( Ware ware, Money totalPrice, int amount );
+		void onConfirm( int mode, Ware ware, Money totalPrice, int amount );
 	}
 
 	private final int PADDING = 32;
-	public final int MODE_BUY = 0;
-	public final int MODE_SELL = 1;
+	public static final int MODE_BUY = 0;
+	public static final int MODE_SELL = 1;
 
 	private GuiLabel _capitalValueLabel;
 	private GuiSlider _slider;
@@ -63,11 +63,14 @@ public class GuiTransaction extends GuiPage
 									   @Override
 									   public void onValueChanged( int oldValue, int newValue )
 									   {
-										   Money price = _city.calculatePrice( _ware.getName(), newValue );
-										   if( _player.canAfford( price ) )
-										   		_slider.setCurrentValueTextColor( Color.WHITE );
-										   else
-										   		_slider.setCurrentValueTextColor( Color.RED );
+										   if( _mode == MODE_BUY )
+										   {
+											   Money price = _city.calculatePrice( _ware.getName(), newValue );
+											   if( _player.canAfford( price ) )
+												   _slider.setCurrentValueTextColor( Color.WHITE );
+											   else
+												   _slider.setCurrentValueTextColor( Color.RED );
+										   }
 									   }
 								   } );
 
@@ -116,7 +119,7 @@ public class GuiTransaction extends GuiPage
 		{
 			int amount = _slider.getValue();
 			Money price = _city.calculatePrice( _ware.getName(), amount );
-			_confirmationListener.onConfirm( _ware, price, amount );
+			_confirmationListener.onConfirm( _mode, _ware, price, amount );
 
 			_slider.setValue( 0 );
 			_slider.setCurrentValueTextColor( Color.WHITE );

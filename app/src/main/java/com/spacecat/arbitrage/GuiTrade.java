@@ -90,6 +90,7 @@ public class GuiTrade
 
 											 GuiTransaction transaction = (GuiTransaction)_pages[_currentPage];
 											 transaction.setWare( _selectedWare );
+											 transaction.setMode( mode );
 											 transaction.appearing();
 
 											 String modeName = "Buy";
@@ -103,17 +104,25 @@ public class GuiTrade
 
 		GuiTransaction transaction = new GuiTransaction();
 		transaction.setOnConfirmation( new GuiTransaction.IConfirmationListener()
-									   {
-										   @Override
-										   public void onConfirm( Ware ware, Money totalPrice, int amount )
-										   {
-											   if( _player.buyWares( ware, totalPrice, amount ) )
-											   		_city.sellWares( ware, totalPrice, amount );
+		{
+			@Override
+			public void onConfirm( int mode, Ware ware, Money totalPrice, int amount )
+			{
+				if( mode == GuiTransaction.MODE_BUY )
+				{
+					if( _player.buyWares( ware, totalPrice, amount ) )
+						_city.sellWares( ware, totalPrice, amount );
+				}
+				else // MODE_SELL
+				{
+					_city.buyWares( ware, totalPrice, amount );
+					_player.sellWares( ware, totalPrice, amount );
+				}
 
-											   GuiTransaction t = (GuiTransaction)_pages[PAGE_TRANSACTION];
-											   t.updateAppearance();
-										   }
-									   } );
+				GuiTransaction t = (GuiTransaction)_pages[PAGE_TRANSACTION];
+				t.updateAppearance();
+			}
+		} );
 
 		_pages[PAGE_WARES] = wares;
 		_pages[PAGE_INVENTORY] = inventory;
@@ -132,6 +141,7 @@ public class GuiTrade
 			{
 				_currentPage = PAGE_WARES;
 				_navigationBar.showStage( _currentPage );
+				_pages[_currentPage].appearing();
 			}
 		} );
 		_navigationBar.addStage( "", new GuiElement.ITouchListener()
@@ -141,6 +151,7 @@ public class GuiTrade
 			{
 				_currentPage = PAGE_INVENTORY;
 				_navigationBar.showStage( _currentPage );
+				_pages[_currentPage].appearing();
 			}
 		} );
 		_navigationBar.addStage( "", null );

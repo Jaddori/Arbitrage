@@ -135,7 +135,7 @@ public class GuiSlider extends GuiElement
 
 		if( _value > 0 )
 			_minValueText.draw();
-		if( _value < _maxValue )
+		if( _value < _maxValue || _maxValue == 0 )
 			_maxValueText.draw();
 		_curValueText.draw();
 	}

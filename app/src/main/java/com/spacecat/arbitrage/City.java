@@ -101,7 +101,7 @@ public class City
 		Ware ware = getWare( wareName );
 		if( ware != null )
 		{
-			int silver = amount * ( ware.getDemand() / ware.getSupply() ) * 100;
+			int silver = amount * (int)( ( (float)ware.getDemand() / (float)ware.getSupply() ) * 100.0f );
 			result.setSilver( silver );
 		}
 
@@ -121,13 +121,6 @@ public class City
 			{
 				correspondingWare.incrementSupply( amount );
 			}
-			else
-			{
-				correspondingWare = new Ware( ware );
-				correspondingWare.setSupply( amount );
-
-				_wares.add( correspondingWare );
-			}
 
 			result = true;
 		}
@@ -146,7 +139,7 @@ public class City
 
 		if( myWare != null )
 		{
-			if( myWare.getSupply() > amount )
+			if( myWare.getSupply() >= amount )
 			{
 				myWare.decrementSupply( amount );
 				//_money.add( totalPrice );

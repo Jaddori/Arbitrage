@@ -39,7 +39,7 @@ public class Money
 		transform();
 	}
 
-	public void transform()
+	private void transform()
 	{
 		if( _silver > 0 )
 		{
@@ -49,7 +49,7 @@ public class Money
 		else
 		{
 			int absSilver = -_silver;
-			_gold -= absSilver / SILVER_PER_GOLD;
+			_gold -= ( absSilver / SILVER_PER_GOLD ) + 1;
 			_silver = absSilver % SILVER_PER_GOLD;
 		}
 	}
@@ -62,11 +62,33 @@ public class Money
 		transform();
 	}
 
+	public void addGold( int gold )
+	{
+		_gold += gold;
+	}
+
+	public void addSilver( int silver )
+	{
+		_silver += silver;
+		transform();
+	}
+
 	public void sub( Money ref )
 	{
 		_gold -= ref._gold;
 		_silver -= ref._silver;
 
+		transform();
+	}
+
+	public void subGold( int gold )
+	{
+		_gold -= gold;
+	}
+
+	public void subSilver( int silver )
+	{
+		_silver -= silver;
 		transform();
 	}
 
@@ -132,6 +154,14 @@ public class Money
 		int refTotal = ref._gold * SILVER_PER_GOLD + ref._silver;
 
 		return ( total >= refTotal );
+	}
+
+	public boolean less( Money ref )
+	{
+		int total = _gold * SILVER_PER_GOLD + _silver;
+		int refTotal = ref._gold * SILVER_PER_GOLD + ref._silver;
+
+		return ( total < refTotal );
 	}
 
 	public boolean lessEquals( Money ref )
